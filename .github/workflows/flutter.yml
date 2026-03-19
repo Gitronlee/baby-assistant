@@ -1,0 +1,125 @@
+name: Flutter CI/CD
+
+on:
+  push:
+    branches: [ main, master ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+        
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.0'
+        channel: 'stable'
+        cache: true
+        
+    - name: Flutter version
+      run: flutter --version
+      
+    - name: Get dependencies
+      run: flutter pub get
+      
+    - name: Analyze code
+      run: flutter analyze --no-fatal-infos
+      
+    - name: Run tests
+      run: flutter test --no-pub
+      
+    - name: Build APK
+      run: flutter build apk --release
+      
+    - name: Upload APK artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-release-apk
+        path: build/app/outputs/flutter-apk/app-release.apk
+        if-no-files-found: error
+        
+  build-ios:
+    name: Build iOS (Optional)
+    runs-on: macos-latest
+    if: github.event_name == 'push' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.0'
+        channel: 'stable'
+        cache: true
+        
+    - name: Get dependencies
+      run: flutter pub get
+      
+    - name: Build iOS
+      run: flutter build ios --release --no-codesign
+      
+    - name: Upload iOS build
+      uses: actions/upload-artifact@v4
+      with:
+        name: ios-release-build
+        path: build/ios/iphoneos/Runner.app
+        
+  release:
+    name: Create Release
+    needs: [build-android]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+    - name: Download APK artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: app-release-apk
+        path: artifacts
+        
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref_name }}
+        release_name: Release ${{ github.ref_name }}
+        body: |
+          小宝助手 ${{ github.ref_name }}
+          
+          ## 功能特性
+          - 小宝助眠：白噪音播放器，支持后台播放
+          - 小宝记重：体重记录和成长曲线
+          - 小宝记奶：喂奶倒计时
+          - 奶量计算：奶量统计和趋势图
+          
+          ## 下载
+          - Android APK: 下载下方的 app-release.apk 文件
+        draft: false
+        prerelease: false
+        
+    - name: Upload Release APK
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: artifacts/app-release.apk
+        asset_name: baby-assistant-${{ github.ref_name }}.apk
+        asset_content_type: application/vnd.android.package-archive

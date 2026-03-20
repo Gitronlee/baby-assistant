@@ -387,8 +387,9 @@ class _HomeScreenState extends State<HomeScreen> {
               _buildGridItem(
                 context,
                 icon: Icons.monitor_weight,
-                title: '萌宝笔记',
-                subtitle: '体重身高奶量\n点击查看详情',
+                title: '成长轨迹',
+                middleText: '记录成长数据',
+                subtitle: '点击查看详情',
                 color: const Color(0xFFE8F5E9),
                 onTap: () {
                   Navigator.push(
@@ -404,7 +405,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 context,
                 icon: Icons.info_outline,
                 title: '关于',
-                subtitle: '版本信息与联系',
+                middleText: '版本信息',
+                subtitle: '点击查看详情',
                 color: const Color(0xFFF3E5F5),
                 onTap: () {
                   Navigator.push(
@@ -443,7 +445,7 @@ class _HomeScreenState extends State<HomeScreen> {
           borderRadius: BorderRadius.circular(24),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Column(
+              child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
@@ -455,8 +457,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   '助眠白噪声',
                   style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
                     color: _isPlaying ? Colors.white : Colors.indigo.shade700,
                   ),
                 ),
@@ -464,7 +466,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   _customAudioPath != null ? '自定义音频' : _currentNoise,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                     color: _isPlaying ? Colors.white70 : Colors.indigo.shade400,
                   ),
                 ),
@@ -751,6 +754,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required String title,
     required Color color,
     required VoidCallback onTap,
+    String? middleText,
     String? subtitle,
   }) {
     return Card(
@@ -784,23 +788,35 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 12),
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey.shade700,
                   ),
                 ),
+                if (middleText != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    middleText,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey.shade800,
+                    ),
+                  ),
+                ],
                 if (subtitle != null) ...[
                   const SizedBox(height: 4),
                   Text(
                     subtitle,
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 10,
                       color: Colors.grey.shade600,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                ] else ...[
-                  const SizedBox(height: 15),
+                ] else if (middleText == null) ...[
+                  const SizedBox(height: 20),
                 ],
               ],
             ),

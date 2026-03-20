@@ -78,8 +78,7 @@ class _WeightScreenState extends State<WeightScreen> {
     setState(() {
       _weightHistory.insert(0, entry);
     });
-    final List<String> jsonList = _weightHistory.map((e) => jsonEncode(e.toJson())).toList();
-    await _prefs.setStringList('weight_history', jsonList);
+    await _saveWeightHistory();
     _weightController.clear();
   }
 
@@ -92,25 +91,102 @@ class _WeightScreenState extends State<WeightScreen> {
     setState(() {
       _milkHistory.insert(0, entry);
     });
+    await _saveMilkHistory();
+    _milkController.clear();
+  }
+
+  Future<void> _saveWeightHistory() async {
+    final List<String> jsonList = _weightHistory.map((e) => jsonEncode(e.toJson())).toList();
+    await _prefs.setStringList('weight_history', jsonList);
+  }
+
+  Future<void> _saveMilkHistory() async {
     final List<String> jsonList = _milkHistory.map((e) => jsonEncode(e.toJson())).toList();
     await _prefs.setStringList('milk_history', jsonList);
-    _milkController.clear();
   }
 
   Future<void> _deleteWeight(int index) async {
     setState(() {
       _weightHistory.removeAt(index);
     });
-    final List<String> jsonList = _weightHistory.map((e) => jsonEncode(e.toJson())).toList();
-    await _prefs.setStringList('weight_history', jsonList);
+    await _saveWeightHistory();
   }
 
   Future<void> _deleteMilk(int index) async {
     setState(() {
       _milkHistory.removeAt(index);
     });
-    final List<String> jsonList = _milkHistory.map((e) => jsonEncode(e.toJson())).toList();
-    await _prefs.setStringList('milk_history', jsonList);
+    await _saveMilkHistory();
+  }
+
+  void _editWeight(int index) {
+    final entry = _weightHistory[index];
+    final controller = TextEditingController(text: entry.weight.toString());
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('修改体重记录'),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.numberWithOptions(decimal: true),
+          decoration: const InputDecoration(labelText: '体重 (kg)'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('取消'),
+          ),
+          TextButton(
+            onPressed: () {
+              final newWeight = double.tryParse(controller.text);
+              if (newWeight != null) {
+                setState(() {
+                  _weightHistory[index] = WeightEntry(entry.date, newWeight);
+                });
+                _saveWeightHistory();
+              }
+              Navigator.pop(context);
+            },
+            child: const Text('保存'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _editMilk(int index) {
+    final entry = _milkHistory[index];
+    final controller = TextEditingController(text: entry.amount.toString());
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('修改奶量记录'),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.numberWithOptions(decimal: true),
+          decoration: const InputDecoration(labelText: '奶量 (ml)'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('取消'),
+          ),
+          TextButton(
+            onPressed: () {
+              final newAmount = double.tryParse(controller.text);
+              if (newAmount != null) {
+                setState(() {
+                  _milkHistory[index] = MilkEntry(entry.date, newAmount);
+                });
+                _saveMilkHistory();
+              }
+              Navigator.pop(context);
+            },
+            child: const Text('保存'),
+          ),
+        ],
+      ),
+    );
   }
 
   List<FlSpot> _buildWeightSpots() {
@@ -127,8 +203,36 @@ class _WeightScreenState extends State<WeightScreen> {
     });
   }
 
+  double _getMilkTotalForDay(DateTime date) {
+    final startOfDay = DateTime(date.year, date.month, date.day);
+    final endOfDay = startOfDay.add(const Duration(days: 1));
+    return _milkHistory
+        .where((e) => e.date.isAfter(startOfDay) && e.date.isBefore(endOfDay))
+        .fold(0.0, (sum, e) => sum + e.amount);
+  }
+
+  double _getMilkTotalForWeek() {
+    final now = DateTime.now();
+    final startOfWeek = DateTime(now.year, now.month, now.day).subtract(Duration(days: now.weekday - 1));
+    return _milkHistory
+        .where((e) => e.date.isAfter(startOfWeek) || e.date.isAtSameMomentAs(startOfWeek))
+        .fold(0.0, (sum, e) => sum + e.amount);
+  }
+
+  double _getMilkTotalForMonth() {
+    final now = DateTime.now();
+    final startOfMonth = DateTime(now.year, now.month, 1);
+    return _milkHistory
+        .where((e) => e.date.isAfter(startOfMonth) || e.date.isAtSameMomentAs(startOfMonth))
+        .fold(0.0, (sum, e) => sum + e.amount);
+  }
+
   String _dateLabel(DateTime d) {
     return '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+  }
+
+  String _timeLabel(DateTime d) {
+    return '${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -259,9 +363,11 @@ class _WeightScreenState extends State<WeightScreen> {
                             itemBuilder: (ctx, idx) {
                               final e = _weightHistory[idx];
                               final dateStr = _dateLabel(e.date);
+                              final timeStr = _timeLabel(e.date);
                               return ListTile(
-                                title: Text(dateStr),
+                                title: Text('$dateStr $timeStr'),
                                 trailing: Text('${e.weight.toStringAsFixed(1)} kg'),
+                                onTap: () => _editWeight(idx),
                                 onLongPress: () => _deleteWeight(idx),
                               );
                             },
@@ -277,11 +383,38 @@ class _WeightScreenState extends State<WeightScreen> {
   }
 
   Widget _buildMilkTab(Color cardColor) {
+    final today = _getMilkTotalForDay(DateTime.now());
+    final week = _getMilkTotalForWeek();
+    final month = _getMilkTotalForMonth();
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          Card(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+            color: cardColor,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('奶量统计', style: Theme.of(context).textTheme.titleLarge),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildStatItem('今日', today, Colors.orange),
+                      _buildStatItem('本周', week, Colors.blue),
+                      _buildStatItem('本月', month, Colors.green),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
           Card(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
             color: cardColor,
@@ -363,9 +496,11 @@ class _WeightScreenState extends State<WeightScreen> {
                             itemBuilder: (ctx, idx) {
                               final e = _milkHistory[idx];
                               final dateStr = _dateLabel(e.date);
+                              final timeStr = _timeLabel(e.date);
                               return ListTile(
-                                title: Text(dateStr),
+                                title: Text('$dateStr $timeStr'),
                                 trailing: Text('${e.amount.toStringAsFixed(0)} ml'),
+                                onTap: () => _editMilk(idx),
                                 onLongPress: () => _deleteMilk(idx),
                               );
                             },
@@ -377,6 +512,29 @@ class _WeightScreenState extends State<WeightScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildStatItem(String label, double value, Color color) {
+    return Column(
+      children: [
+        Text(
+          '${value.toStringAsFixed(0)} ml',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey.shade600,
+          ),
+        ),
+      ],
     );
   }
 }

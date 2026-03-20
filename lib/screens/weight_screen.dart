@@ -122,34 +122,86 @@ class _WeightScreenState extends State<WeightScreen> {
   void _editWeight(int index) {
     final entry = _weightHistory[index];
     final controller = TextEditingController(text: entry.weight.toString());
+    DateTime selectedDate = entry.date;
+    TimeOfDay selectedTime = TimeOfDay.fromDateTime(entry.date);
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('修改体重记录'),
-        content: TextField(
-          controller: controller,
-          keyboardType: TextInputType.numberWithOptions(decimal: true),
-          decoration: const InputDecoration(labelText: '体重 (kg)'),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('修改体重记录'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: controller,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(labelText: '体重 (kg)'),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                title: const Text('日期'),
+                subtitle: Text('${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}'),
+                trailing: const Icon(Icons.calendar_today),
+                onTap: () async {
+                  final picked = await showDatePicker(
+                    context: context,
+                    initialDate: selectedDate,
+                    firstDate: DateTime(2020),
+                    lastDate: DateTime.now(),
+                  );
+                  if (picked != null) {
+                    setDialogState(() {
+                      selectedDate = picked;
+                    });
+                  }
+                },
+              ),
+              ListTile(
+                title: const Text('时间'),
+                subtitle: Text('${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}'),
+                trailing: const Icon(Icons.access_time),
+                onTap: () async {
+                  final picked = await showTimePicker(
+                    context: context,
+                    initialTime: selectedTime,
+                  );
+                  if (picked != null) {
+                    setDialogState(() {
+                      selectedTime = picked;
+                    });
+                  }
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('取消'),
+            ),
+            TextButton(
+              onPressed: () {
+                final newWeight = double.tryParse(controller.text);
+                if (newWeight != null) {
+                  final newDate = DateTime(
+                    selectedDate.year,
+                    selectedDate.month,
+                    selectedDate.day,
+                    selectedTime.hour,
+                    selectedTime.minute,
+                  );
+                  setState(() {
+                    _weightHistory[index] = WeightEntry(newDate, newWeight);
+                  });
+                  _saveWeightHistory();
+                }
+                Navigator.pop(context);
+              },
+              child: const Text('保存'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('取消'),
-          ),
-          TextButton(
-            onPressed: () {
-              final newWeight = double.tryParse(controller.text);
-              if (newWeight != null) {
-                setState(() {
-                  _weightHistory[index] = WeightEntry(entry.date, newWeight);
-                });
-                _saveWeightHistory();
-              }
-              Navigator.pop(context);
-            },
-            child: const Text('保存'),
-          ),
-        ],
       ),
     );
   }
@@ -157,34 +209,86 @@ class _WeightScreenState extends State<WeightScreen> {
   void _editMilk(int index) {
     final entry = _milkHistory[index];
     final controller = TextEditingController(text: entry.amount.toString());
+    DateTime selectedDate = entry.date;
+    TimeOfDay selectedTime = TimeOfDay.fromDateTime(entry.date);
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('修改奶量记录'),
-        content: TextField(
-          controller: controller,
-          keyboardType: TextInputType.numberWithOptions(decimal: true),
-          decoration: const InputDecoration(labelText: '奶量 (ml)'),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('修改奶量记录'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: controller,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(labelText: '奶量 (ml)'),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                title: const Text('日期'),
+                subtitle: Text('${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}'),
+                trailing: const Icon(Icons.calendar_today),
+                onTap: () async {
+                  final picked = await showDatePicker(
+                    context: context,
+                    initialDate: selectedDate,
+                    firstDate: DateTime(2020),
+                    lastDate: DateTime.now(),
+                  );
+                  if (picked != null) {
+                    setDialogState(() {
+                      selectedDate = picked;
+                    });
+                  }
+                },
+              ),
+              ListTile(
+                title: const Text('时间'),
+                subtitle: Text('${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}'),
+                trailing: const Icon(Icons.access_time),
+                onTap: () async {
+                  final picked = await showTimePicker(
+                    context: context,
+                    initialTime: selectedTime,
+                  );
+                  if (picked != null) {
+                    setDialogState(() {
+                      selectedTime = picked;
+                    });
+                  }
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('取消'),
+            ),
+            TextButton(
+              onPressed: () {
+                final newAmount = double.tryParse(controller.text);
+                if (newAmount != null) {
+                  final newDate = DateTime(
+                    selectedDate.year,
+                    selectedDate.month,
+                    selectedDate.day,
+                    selectedTime.hour,
+                    selectedTime.minute,
+                  );
+                  setState(() {
+                    _milkHistory[index] = MilkEntry(newDate, newAmount);
+                  });
+                  _saveMilkHistory();
+                }
+                Navigator.pop(context);
+              },
+              child: const Text('保存'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('取消'),
-          ),
-          TextButton(
-            onPressed: () {
-              final newAmount = double.tryParse(controller.text);
-              if (newAmount != null) {
-                setState(() {
-                  _milkHistory[index] = MilkEntry(entry.date, newAmount);
-                });
-                _saveMilkHistory();
-              }
-              Navigator.pop(context);
-            },
-            child: const Text('保存'),
-          ),
-        ],
       ),
     );
   }

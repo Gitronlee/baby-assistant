@@ -21,33 +21,34 @@ class BabyAssistantApp extends StatelessWidget {
       title: '萌宝助手',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFF8E8E8),
+          seedColor: const Color(0xFFFFB6C1),
           brightness: Brightness.light,
         ),
         useMaterial3: true,
+        scaffoldBackgroundColor: const Color(0xFFFFF5F5),
         cardTheme: CardTheme(
-          elevation: 2,
-          shadowColor: Colors.pink.shade100.withOpacity(0.3),
+          elevation: 4,
+          shadowColor: Colors.pink.shade200.withOpacity(0.4),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24),
           ),
         ),
         appBarTheme: AppBarTheme(
-          backgroundColor: Colors.pink.shade50,
-          foregroundColor: Colors.pink.shade800,
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.brown.shade700,
           elevation: 0,
           centerTitle: true,
           titleTextStyle: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
-            color: Colors.pink.shade800,
+            color: Colors.brown.shade700,
           ),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.pink.shade100,
-            foregroundColor: Colors.pink.shade800,
-            elevation: 1,
+            backgroundColor: const Color(0xFFFFB6C1),
+            foregroundColor: Colors.white,
+            elevation: 2,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
@@ -56,14 +57,14 @@ class BabyAssistantApp extends StatelessWidget {
         ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: Colors.pink.shade50,
+          fillColor: Colors.white,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide.none,
+            borderSide: BorderSide(color: Colors.pink.shade100),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: Colors.pink.shade200, width: 2),
+            borderSide: BorderSide(color: Colors.pink.shade300, width: 2),
           ),
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         ),
@@ -345,7 +346,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          '小宝助手',
+          '萌宝助手',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -363,19 +364,31 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: GridView.count(
-          crossAxisCount: 2,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
-          children: [
-            _buildSleepCard(context),
-            _buildGridItem(
-              context,
-              icon: Icons.monitor_weight,
-              title: '萌宝笔记',
-              color: Colors.green.shade100,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFFFF5F5),
+              Color(0xFFFFE4E1),
+              Color(0xFFFFDAB9),
+            ],
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: GridView.count(
+            crossAxisCount: 2,
+            mainAxisSpacing: 16,
+            crossAxisSpacing: 16,
+            children: [
+              _buildSleepCard(context),
+              _buildGridItem(
+                context,
+                icon: Icons.monitor_weight,
+                title: '萌宝笔记',
+                color: const Color(0xFFE8F5E9),
               onTap: () {
                 Navigator.push(
                   context,
@@ -390,7 +403,7 @@ class _HomeScreenState extends State<HomeScreen> {
               context,
               icon: Icons.info_outline,
               title: '关于',
-              color: Colors.purple.shade100,
+              color: const Color(0xFFF3E5F5),
               onTap: () {
                 Navigator.push(
                   context,
@@ -408,37 +421,50 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildSleepCard(BuildContext context) {
     return Card(
-      color: _isPlaying ? Colors.indigo.shade200 : Colors.indigo.shade100,
-      child: InkWell(
-        onTap: _toggleSleep,
-        onLongPress: _showNoiseSelector,
-        borderRadius: BorderRadius.circular(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              _isPlaying ? Icons.pause_circle_filled : Icons.play_circle_filled,
-              size: 48,
-              color: _isPlaying ? Colors.white : Theme.of(context).colorScheme.primary,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              '助眠白噪声',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: _isPlaying ? Colors.white : null,
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: _isPlaying
+                ? [const Color(0xFF7986CB), const Color(0xFF5C6BC0)]
+                : [const Color(0xFFE8EAF6), const Color(0xFFC5CAE9)],
+          ),
+        ),
+        child: InkWell(
+          onTap: _toggleSleep,
+          onLongPress: _showNoiseSelector,
+          borderRadius: BorderRadius.circular(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                _isPlaying ? Icons.pause_circle_filled : Icons.play_circle_filled,
+                size: 48,
+                color: _isPlaying ? Colors.white : Colors.indigo.shade400,
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              _customAudioPath != null ? '自定义' : _currentNoise,
-              style: TextStyle(
-                fontSize: 12,
-                color: _isPlaying ? Colors.white70 : Colors.black54,
+              const SizedBox(height: 12),
+              Text(
+                '助眠白噪声',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: _isPlaying ? Colors.white : Colors.indigo.shade700,
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 4),
+              Text(
+                _customAudioPath != null ? '自定义' : _currentNoise,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: _isPlaying ? Colors.white70 : Colors.indigo.shade400,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -446,49 +472,62 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildFeedingCard(BuildContext context) {
     final canFeed = _feedingRemaining.isNegative || _feedingRemaining == Duration.zero;
-    final backgroundColor = canFeed ? Colors.green.shade100 : Colors.orange.shade100;
 
     return Card(
-      color: backgroundColor,
-      child: InkWell(
-        onTap: () => _showFeedingResetDialog(context),
-        onLongPress: () => _showFeedingSettings(context),
-        borderRadius: BorderRadius.circular(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              canFeed ? Icons.check_circle : Icons.timer,
-              size: 48,
-              color: canFeed ? Colors.green.shade700 : Colors.orange.shade700,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              canFeed ? '可以喂奶了' : '距离下次喂奶',
-              style: TextStyle(
-                fontSize: 12,
-                color: canFeed ? Colors.green.shade700 : Colors.orange.shade700,
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: canFeed
+                ? [const Color(0xFFA5D6A7), const Color(0xFF81C784)]
+                : [const Color(0xFFFFCC80), const Color(0xFFFFB74D)],
+          ),
+        ),
+        child: InkWell(
+          onTap: () => _showFeedingResetDialog(context),
+          onLongPress: () => _showFeedingSettings(context),
+          borderRadius: BorderRadius.circular(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                canFeed ? Icons.check_circle : Icons.timer,
+                size: 48,
+                color: canFeed ? Colors.green.shade800 : Colors.orange.shade800,
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              _formatFeedingDuration(_feedingRemaining),
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: canFeed ? Colors.green.shade700 : Colors.orange.shade700,
-                fontFamily: 'monospace',
+              const SizedBox(height: 8),
+              Text(
+                canFeed ? '可以喂奶了' : '距离下次喂奶',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: canFeed ? Colors.green.shade800 : Colors.orange.shade800,
+                ),
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              '长按设置',
-              style: TextStyle(
-                fontSize: 10,
-                color: Colors.grey.shade500,
+              const SizedBox(height: 4),
+              Text(
+                _formatFeedingDuration(_feedingRemaining),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: canFeed ? Colors.green.shade900 : Colors.orange.shade900,
+                  fontFamily: 'monospace',
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 4),
+              Text(
+                '长按设置',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: canFeed ? Colors.green.shade600 : Colors.orange.shade600,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -697,27 +736,41 @@ class _HomeScreenState extends State<HomeScreen> {
     required VoidCallback onTap,
   }) {
     return Card(
-      color: color,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 48,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              color,
+              color.withOpacity(0.7),
+            ],
+          ),
+        ),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 48,
+                color: Theme.of(context).colorScheme.primary,
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

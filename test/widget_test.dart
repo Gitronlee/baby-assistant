@@ -15,6 +15,6 @@ void main() {
     await tester.pumpWidget(const BabyAssistantApp());
 
     // Verify that the home screen is displayed with the correct title.
-    expect(find.text('小宝助手'), findsOneWidget);
+    expect(find.text('萌宝助手'), findsOneWidget);
   });
 }

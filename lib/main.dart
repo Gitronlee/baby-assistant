@@ -389,15 +389,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: Icons.monitor_weight,
                 title: '萌宝笔记',
                 color: const Color(0xFFE8F5E9),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const WeightScreen(),
-                  ),
-                );
-              },
-            ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const WeightScreen(),
+                    ),
+                  );
+                },
+              ),
             _buildFeedingCard(context),
             _buildGridItem(
               context,

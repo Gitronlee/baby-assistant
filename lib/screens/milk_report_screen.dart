@@ -58,12 +58,6 @@ class _MilkReportScreenState extends State<MilkReportScreen> {
     _controller.clear();
   }
 
-  double _sumFor(DateTime start, DateTime end) {
-    return _records
-        .where((r) => (r.date.isAfter(start) && r.date.isBefore(end)) || r.date.isAtSameMomentAs(end))
-        .fold(0.0, (sum, r) => sum + r.amount);
-  }
-
   List<FlSpot> _buildSpots7or30() {
     final DateTime end = DateTime.now();
     final DateTime start = end.subtract(Duration(days: _daysWindow - 1));
@@ -101,8 +95,8 @@ class _MilkReportScreenState extends State<MilkReportScreen> {
                       height: 180,
                       child: LineChart(
                         LineChartData(
-                          gridData: FlGridData(show: true, drawVerticalLine: false),
-                          titlesData: FlTitlesData(show: false),
+                          gridData: const FlGridData(show: true, drawVerticalLine: false),
+                          titlesData: const FlTitlesData(show: false),
                           borderData: FlBorderData(show: false),
                           lineBarsData: [
                             LineChartBarData(
@@ -110,7 +104,7 @@ class _MilkReportScreenState extends State<MilkReportScreen> {
                               isCurved: true,
                               color: Theme.of(context).colorScheme.primary,
                               barWidth: 3,
-                              dotData: FlDotData(show: false),
+                              dotData: const FlDotData(show: false),
                             ),
                           ],
                         ),
@@ -120,7 +114,7 @@ class _MilkReportScreenState extends State<MilkReportScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Days window'),
+                        const Text('Days window'),
                         Row(
                           children: [
                             TextButton(onPressed: () { setState(() { _daysWindow = 7; }); }, child: const Text('7d')),

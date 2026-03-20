@@ -103,8 +103,8 @@ class _WeightScreenState extends State<WeightScreen> {
                       height: 180,
                       child: LineChart(
                         LineChartData(
-                          gridData: FlGridData(show: true, drawVerticalLine: false),
-                          titlesData: FlTitlesData(show: false),
+                          gridData: const FlGridData(show: true, drawVerticalLine: false),
+                          titlesData: const FlTitlesData(show: false),
                           borderData: FlBorderData(show: false),
                           lineBarsData: [
                             LineChartBarData(
@@ -112,7 +112,7 @@ class _WeightScreenState extends State<WeightScreen> {
                               isCurved: true,
                               color: Theme.of(context).colorScheme.primary,
                               barWidth: 3,
-                              dotData: FlDotData(show: false),
+                              dotData: const FlDotData(show: false),
                             ),
                           ],
                         ),

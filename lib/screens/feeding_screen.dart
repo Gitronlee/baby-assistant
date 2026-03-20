@@ -14,7 +14,6 @@ class _FeedingScreenState extends State<FeedingScreen> {
   int _intervalMinutes = 180;
   DateTime? _nextFeedingTime;
   Duration _remaining = Duration.zero;
-  bool _isCountingDown = false;
 
   @override
   void initState() {
@@ -45,7 +44,6 @@ class _FeedingScreenState extends State<FeedingScreen> {
       final now = DateTime.now();
       setState(() {
         _remaining = _nextFeedingTime!.difference(now);
-        _isCountingDown = _remaining.isNegative == false;
       });
     });
   }
@@ -185,19 +183,22 @@ class _FeedingScreenState extends State<FeedingScreen> {
           ),
           TextButton(
             onPressed: () async {
+              final navigator = Navigator.of(context);
               final newHours = int.tryParse(hours.toString()) ?? hours;
               final newMinutes = int.tryParse(minutes.toString()) ?? minutes;
               final newInterval = newHours * 60 + newMinutes;
               if (newInterval > 0) {
                 final prefs = await SharedPreferences.getInstance();
                 await prefs.setInt('feeding_interval', newInterval);
-                setState(() {
-                  _intervalMinutes = newInterval;
-                  _nextFeedingTime = DateTime.now().add(Duration(minutes: newInterval));
-                });
+                if (mounted) {
+                  setState(() {
+                    _intervalMinutes = newInterval;
+                    _nextFeedingTime = DateTime.now().add(Duration(minutes: newInterval));
+                  });
+                }
                 await prefs.setString('next_feeding_time', _nextFeedingTime!.toIso8601String());
               }
-              Navigator.pop(context);
+              navigator.pop();
             },
             child: const Text('确定'),
           ),

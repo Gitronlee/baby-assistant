@@ -398,22 +398,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 },
               ),
-            _buildFeedingCard(context),
-            _buildGridItem(
-              context,
-              icon: Icons.info_outline,
-              title: '关于',
-              color: const Color(0xFFF3E5F5),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AboutScreen(),
-                  ),
-                );
-              },
-            ),
-          ],
+              _buildFeedingCard(context),
+              _buildGridItem(
+                context,
+                icon: Icons.info_outline,
+                title: '关于',
+                color: const Color(0xFFF3E5F5),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AboutScreen(),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

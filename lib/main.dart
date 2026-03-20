@@ -3,8 +3,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:file_picker/file_picker.dart';
+import 'dart:async';
 import 'screens/weight_screen.dart';
-import 'screens/feeding_screen.dart';
 import 'screens/about_screen.dart';
 import 'screens/settings_screen.dart';
 
@@ -67,6 +67,11 @@ class _HomeScreenState extends State<HomeScreen> {
     '白噪音': 'https://www.soundjay.com/ambient/sounds/white-noise-1.mp3',
   };
 
+  Timer? _feedingTimer;
+  int _intervalMinutes = 180;
+  DateTime? _nextFeedingTime;
+  Duration _feedingRemaining = Duration.zero;
+
   @override
   void initState() {
     super.initState();
@@ -79,7 +84,38 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _currentNoise = prefs.getString('selected_noise') ?? '吹风机';
       _customAudioPath = prefs.getString('custom_audio_path');
+      _intervalMinutes = prefs.getInt('feeding_interval') ?? 180;
+      final nextTimeStr = prefs.getString('next_feeding_time');
+      if (nextTimeStr != null) {
+        _nextFeedingTime = DateTime.tryParse(nextTimeStr);
+      }
+      if (_nextFeedingTime == null) {
+        _nextFeedingTime = DateTime.now().add(Duration(minutes: _intervalMinutes));
+        prefs.setString('next_feeding_time', _nextFeedingTime!.toIso8601String());
+      }
     });
+    _startFeedingTimer();
+  }
+
+  void _startFeedingTimer() {
+    _feedingTimer?.cancel();
+    _feedingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_nextFeedingTime == null) return;
+      final now = DateTime.now();
+      setState(() {
+        _feedingRemaining = _nextFeedingTime!.difference(now);
+      });
+    });
+  }
+
+  Future<void> _resetFeedingTimer() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('next_feeding_time');
+    setState(() {
+      _nextFeedingTime = DateTime.now().add(Duration(minutes: _intervalMinutes));
+      _feedingRemaining = Duration(minutes: _intervalMinutes);
+    });
+    prefs.setString('next_feeding_time', _nextFeedingTime!.toIso8601String());
   }
 
   Future<void> _play() async {
@@ -264,6 +300,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _audioPlayer.dispose();
+    _feedingTimer?.cancel();
     super.dispose();
   }
 
@@ -312,20 +349,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
             ),
-            _buildGridItem(
-              context,
-              icon: Icons.baby_changing_station,
-              title: '小宝记奶',
-              color: Colors.orange.shade100,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const FeedingScreen(),
-                  ),
-                );
-              },
-            ),
+            _buildFeedingCard(context),
             _buildGridItem(
               context,
               icon: Icons.info_outline,
@@ -382,6 +406,242 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  Widget _buildFeedingCard(BuildContext context) {
+    final canFeed = _feedingRemaining.isNegative || _feedingRemaining == Duration.zero;
+    final backgroundColor = canFeed ? Colors.green.shade100 : Colors.orange.shade100;
+
+    return Card(
+      color: backgroundColor,
+      child: InkWell(
+        onTap: canFeed ? null : () => _showFeedingResetDialog(context),
+        onLongPress: () => _showFeedingSettings(context),
+        borderRadius: BorderRadius.circular(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              canFeed ? Icons.check_circle : Icons.timer,
+              size: 48,
+              color: canFeed ? Colors.green.shade700 : Colors.orange.shade700,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              canFeed ? '可以喂奶了' : '距离下次喂奶',
+              style: TextStyle(
+                fontSize: 12,
+                color: canFeed ? Colors.green.shade700 : Colors.orange.shade700,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              _formatFeedingDuration(_feedingRemaining),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: canFeed ? Colors.green.shade700 : Colors.orange.shade700,
+                fontFamily: 'monospace',
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              '长按设置',
+              style: TextStyle(
+                fontSize: 10,
+                color: Colors.grey.shade500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _formatFeedingDuration(Duration duration) {
+    if (duration.isNegative) {
+      final absDuration = duration.abs();
+      final hours = absDuration.inHours;
+      final minutes = absDuration.inMinutes % 60;
+      final seconds = absDuration.inSeconds % 60;
+      return '-${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+    }
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes % 60;
+    final seconds = duration.inSeconds % 60;
+    return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
+
+  void _showFeedingResetDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('重新计时'),
+        content: const Text('确定要重新开始计时吗？\n将清除下次提醒时间，仅以间隔时间倒计时。'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('取消'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _resetFeedingTimer();
+            },
+            child: const Text('确定'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showFeedingSettings(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              '喂奶设置',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            ListTile(
+              title: const Text('喂奶间隔'),
+              subtitle: Text('${_intervalMinutes ~/ 60}小时${_intervalMinutes % 60}分钟'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.pop(context);
+                _showIntervalPicker(context);
+              },
+            ),
+            ListTile(
+              title: const Text('下次提醒时间'),
+              subtitle: Text(_nextFeedingTime != null
+                  ? '${_nextFeedingTime!.hour.toString().padLeft(2, '0')}:${_nextFeedingTime!.minute.toString().padLeft(2, '0')}'
+                  : '未设置'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.pop(context);
+                _showTimePicker(context);
+              },
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showIntervalPicker(BuildContext context) {
+    final hoursController = TextEditingController(text: (_intervalMinutes ~/ 60).toString());
+    final minutesController = TextEditingController(text: (_intervalMinutes % 60).toString());
+    final navigator = Navigator.of(context);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('设置喂奶间隔'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 80,
+                  child: TextField(
+                    controller: hoursController,
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
+                    decoration: const InputDecoration(labelText: '小时'),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                const Text(':', style: TextStyle(fontSize: 24)),
+                const SizedBox(width: 16),
+                SizedBox(
+                  width: 80,
+                  child: TextField(
+                    controller: minutesController,
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
+                    decoration: const InputDecoration(labelText: '分钟'),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('取消'),
+          ),
+          TextButton(
+            onPressed: () async {
+              final newHours = int.tryParse(hoursController.text) ?? 0;
+              final newMinutes = int.tryParse(minutesController.text) ?? 0;
+              final newInterval = newHours * 60 + newMinutes;
+              if (newInterval > 0) {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setInt('feeding_interval', newInterval);
+                if (mounted) {
+                  setState(() {
+                    _intervalMinutes = newInterval;
+                    _nextFeedingTime = DateTime.now().add(Duration(minutes: newInterval));
+                  });
+                }
+                await prefs.setString('next_feeding_time', _nextFeedingTime!.toIso8601String());
+              }
+              navigator.pop();
+            },
+            child: const Text('确定'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showTimePicker(BuildContext context) async {
+    final now = DateTime.now();
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(_nextFeedingTime ?? now),
+    );
+    if (picked != null) {
+      setState(() {
+        _nextFeedingTime = DateTime(
+          now.year,
+          now.month,
+          now.day,
+          picked.hour,
+          picked.minute,
+        );
+        if (_nextFeedingTime!.isBefore(now)) {
+          _nextFeedingTime = _nextFeedingTime!.add(const Duration(days: 1));
+        }
+      });
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('next_feeding_time', _nextFeedingTime!.toIso8601String());
+    }
   }
 
   Widget _buildGridItem(

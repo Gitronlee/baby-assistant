@@ -441,40 +441,43 @@ class _HomeScreenState extends State<HomeScreen> {
           onTap: _toggleSleep,
           onLongPress: _showNoiseSelector,
           borderRadius: BorderRadius.circular(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                _isPlaying ? Icons.pause_circle_filled : Icons.play_circle_filled,
-                size: 48,
-                color: _isPlaying ? Colors.white : Colors.indigo.shade400,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                '助眠白噪声',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: _isPlaying ? Colors.white : Colors.indigo.shade700,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  _isPlaying ? Icons.pause_circle_filled : Icons.play_circle_filled,
+                  size: 48,
+                  color: _isPlaying ? Colors.white : Colors.indigo.shade400,
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                _customAudioPath != null ? '自定义音频' : _currentNoise,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: _isPlaying ? Colors.white70 : Colors.indigo.shade400,
+                const SizedBox(height: 12),
+                Text(
+                  '助眠白噪声',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: _isPlaying ? Colors.white : Colors.indigo.shade700,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                _isPlaying ? '点击暂停' : '点击播放 · 长按选择',
-                style: TextStyle(
-                  fontSize: 10,
-                  color: _isPlaying ? Colors.white54 : Colors.indigo.shade300,
+                const SizedBox(height: 4),
+                Text(
+                  _customAudioPath != null ? '自定义音频' : _currentNoise,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: _isPlaying ? Colors.white70 : Colors.indigo.shade400,
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 4),
+                Text(
+                  _isPlaying ? '点击暂停' : '点击播放 · 长按选择',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: _isPlaying ? Colors.white54 : Colors.indigo.shade300,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -502,42 +505,45 @@ class _HomeScreenState extends State<HomeScreen> {
           onTap: () => _showFeedingResetDialog(context),
           onLongPress: () => _showFeedingSettings(context),
           borderRadius: BorderRadius.circular(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                canFeed ? Icons.check_circle : Icons.timer,
-                size: 48,
-                color: canFeed ? Colors.green.shade800 : Colors.orange.shade800,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                canFeed ? '可以喂奶了' : '距离下次喂奶',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  canFeed ? Icons.check_circle : Icons.timer,
+                  size: 48,
                   color: canFeed ? Colors.green.shade800 : Colors.orange.shade800,
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                _formatFeedingDuration(_feedingRemaining),
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: canFeed ? Colors.green.shade900 : Colors.orange.shade900,
-                  fontFamily: 'monospace',
+                const SizedBox(height: 12),
+                Text(
+                  canFeed ? '可以喂奶了' : '距离下次喂奶',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: canFeed ? Colors.green.shade800 : Colors.orange.shade800,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                '长按设置',
-                style: TextStyle(
-                  fontSize: 10,
-                  color: canFeed ? Colors.green.shade600 : Colors.orange.shade600,
+                const SizedBox(height: 4),
+                Text(
+                  _formatFeedingDuration(_feedingRemaining),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: canFeed ? Colors.green.shade900 : Colors.orange.shade900,
+                    fontFamily: 'monospace',
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 4),
+                Text(
+                  '长按设置',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: canFeed ? Colors.green.shade600 : Colors.orange.shade600,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -765,34 +771,39 @@ class _HomeScreenState extends State<HomeScreen> {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 48,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 48,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
-              ),
-              if (subtitle != null) ...[
-                const SizedBox(height: 4),
+                const SizedBox(height: 12),
                 Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.grey.shade600,
+                  title,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
                   ),
-                  textAlign: TextAlign.center,
                 ),
+                if (subtitle != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.grey.shade600,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ] else ...[
+                  const SizedBox(height: 15),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),

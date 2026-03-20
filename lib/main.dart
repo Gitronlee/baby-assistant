@@ -338,7 +338,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _buildGridItem(
               context,
               icon: Icons.monitor_weight,
-              title: '小宝记重',
+              title: '萌宝笔记',
               color: Colors.green.shade100,
               onTap: () {
                 Navigator.push(
@@ -387,7 +387,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 12),
             Text(
-              '小宝助眠',
+              '助眠白噪声',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -533,7 +533,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             ListTile(
-              title: const Text('下次提醒时间'),
+              title: const Text('应喂奶时间'),
               subtitle: Text(_nextFeedingTime != null
                   ? '${_nextFeedingTime!.hour.toString().padLeft(2, '0')}:${_nextFeedingTime!.minute.toString().padLeft(2, '0')}'
                   : '未设置'),
@@ -541,6 +541,15 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () {
                 Navigator.pop(context);
                 _showTimePicker(context);
+              },
+            ),
+            ListTile(
+              title: const Text('重新计时'),
+              subtitle: const Text('复位倒计时，重新开始'),
+              trailing: const Icon(Icons.refresh),
+              onTap: () {
+                Navigator.pop(context);
+                _resetFeedingTimer();
               },
             ),
             const SizedBox(height: 16),

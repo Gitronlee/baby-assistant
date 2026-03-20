@@ -388,7 +388,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 context,
                 icon: Icons.monitor_weight,
                 title: '萌宝笔记',
-                subtitle: '记录体重奶量\n点击查看详情',
+                subtitle: '体重身高奶量\n点击查看详情',
                 color: const Color(0xFFE8F5E9),
                 onTap: () {
                   Navigator.push(

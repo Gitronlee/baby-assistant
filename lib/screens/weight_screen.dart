@@ -22,6 +22,19 @@ class WeightEntry {
   }
 }
 
+class HeightEntry {
+  final DateTime date;
+  final double height;
+  HeightEntry(this.date, this.height);
+  Map<String, dynamic> toJson() => {
+        'date': date.toIso8601String(),
+        'height': height,
+      };
+  static HeightEntry fromJson(Map<String, dynamic> json) {
+    return HeightEntry(DateTime.parse(json['date']), (json['height'] as num).toDouble());
+  }
+}
+
 class MilkEntry {
   final DateTime date;
   final double amount;
@@ -37,8 +50,10 @@ class MilkEntry {
 
 class _WeightScreenState extends State<WeightScreen> {
   final TextEditingController _weightController = TextEditingController();
+  final TextEditingController _heightController = TextEditingController();
   final TextEditingController _milkController = TextEditingController();
   List<WeightEntry> _weightHistory = [];
+  List<HeightEntry> _heightHistory = [];
   List<MilkEntry> _milkHistory = [];
   late SharedPreferences _prefs;
   int _selectedTab = 0;
@@ -58,6 +73,13 @@ class _WeightScreenState extends State<WeightScreen> {
             .map((e) => WeightEntry.fromJson(jsonDecode(e) as Map<String, dynamic>))
             .toList();
         _weightHistory.sort((a, b) => b.date.compareTo(a.date));
+      }
+      final heightJson = _prefs.getStringList('height_history');
+      if (heightJson != null) {
+        _heightHistory = heightJson
+            .map((e) => HeightEntry.fromJson(jsonDecode(e) as Map<String, dynamic>))
+            .toList();
+        _heightHistory.sort((a, b) => b.date.compareTo(a.date));
       }
       final milkJson = _prefs.getStringList('milk_history');
       if (milkJson != null) {
@@ -82,6 +104,19 @@ class _WeightScreenState extends State<WeightScreen> {
     _weightController.clear();
   }
 
+  Future<void> _addHeight() async {
+    final text = _heightController.text.trim();
+    if (text.isEmpty) return;
+    final h = double.tryParse(text);
+    if (h == null) return;
+    final entry = HeightEntry(DateTime.now(), h);
+    setState(() {
+      _heightHistory.insert(0, entry);
+    });
+    await _saveHeightHistory();
+    _heightController.clear();
+  }
+
   Future<void> _addMilk() async {
     final text = _milkController.text.trim();
     if (text.isEmpty) return;
@@ -100,6 +135,11 @@ class _WeightScreenState extends State<WeightScreen> {
     await _prefs.setStringList('weight_history', jsonList);
   }
 
+  Future<void> _saveHeightHistory() async {
+    final List<String> jsonList = _heightHistory.map((e) => jsonEncode(e.toJson())).toList();
+    await _prefs.setStringList('height_history', jsonList);
+  }
+
   Future<void> _saveMilkHistory() async {
     final List<String> jsonList = _milkHistory.map((e) => jsonEncode(e.toJson())).toList();
     await _prefs.setStringList('milk_history', jsonList);
@@ -110,6 +150,13 @@ class _WeightScreenState extends State<WeightScreen> {
       _weightHistory.removeAt(index);
     });
     await _saveWeightHistory();
+  }
+
+  Future<void> _deleteHeight(int index) async {
+    setState(() {
+      _heightHistory.removeAt(index);
+    });
+    await _saveHeightHistory();
   }
 
   Future<void> _deleteMilk(int index) async {
@@ -195,6 +242,93 @@ class _WeightScreenState extends State<WeightScreen> {
                     _weightHistory[index] = WeightEntry(newDate, newWeight);
                   });
                   _saveWeightHistory();
+                }
+                Navigator.pop(context);
+              },
+              child: const Text('保存'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _editHeight(int index) {
+    final entry = _heightHistory[index];
+    final controller = TextEditingController(text: entry.height.toString());
+    DateTime selectedDate = entry.date;
+    TimeOfDay selectedTime = TimeOfDay.fromDateTime(entry.date);
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('修改身高记录'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: controller,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(labelText: '身高 (cm)'),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                title: const Text('日期'),
+                subtitle: Text('${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}'),
+                trailing: const Icon(Icons.calendar_today),
+                onTap: () async {
+                  final picked = await showDatePicker(
+                    context: context,
+                    initialDate: selectedDate,
+                    firstDate: DateTime(2020),
+                    lastDate: DateTime.now(),
+                  );
+                  if (picked != null) {
+                    setDialogState(() {
+                      selectedDate = picked;
+                    });
+                  }
+                },
+              ),
+              ListTile(
+                title: const Text('时间'),
+                subtitle: Text('${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}'),
+                trailing: const Icon(Icons.access_time),
+                onTap: () async {
+                  final picked = await showTimePicker(
+                    context: context,
+                    initialTime: selectedTime,
+                  );
+                  if (picked != null) {
+                    setDialogState(() {
+                      selectedTime = picked;
+                    });
+                  }
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('取消'),
+            ),
+            TextButton(
+              onPressed: () {
+                final newHeight = double.tryParse(controller.text);
+                if (newHeight != null) {
+                  final newDate = DateTime(
+                    selectedDate.year,
+                    selectedDate.month,
+                    selectedDate.day,
+                    selectedTime.hour,
+                    selectedTime.minute,
+                  );
+                  setState(() {
+                    _heightHistory[index] = HeightEntry(newDate, newHeight);
+                  });
+                  _saveHeightHistory();
                 }
                 Navigator.pop(context);
               },
@@ -300,6 +434,13 @@ class _WeightScreenState extends State<WeightScreen> {
     });
   }
 
+  List<FlSpot> _buildHeightSpots() {
+    final List<HeightEntry> sorted = List.from(_heightHistory)..sort((a,b)=> a.date.compareTo(b.date));
+    return List.generate(sorted.length, (i) {
+      return FlSpot(i.toDouble(), sorted[i].height);
+    });
+  }
+
   List<FlSpot> _buildMilkSpots() {
     final List<MilkEntry> sorted = List.from(_milkHistory)..sort((a,b)=> a.date.compareTo(b.date));
     return List.generate(sorted.length, (i) {
@@ -354,26 +495,40 @@ class _WeightScreenState extends State<WeightScreen> {
                   child: ElevatedButton(
                     onPressed: () => setState(() => _selectedTab = 0),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _selectedTab == 0 ? Colors.green.shade100 : Colors.grey.shade200,
+                      backgroundColor: _selectedTab == 0 ? Colors.blue.shade100 : Colors.grey.shade200,
                     ),
-                    child: const Text('体重记录'),
+                    child: const Text('体重'),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 4),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () => setState(() => _selectedTab = 1),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _selectedTab == 1 ? Colors.orange.shade100 : Colors.grey.shade200,
+                      backgroundColor: _selectedTab == 1 ? Colors.green.shade100 : Colors.grey.shade200,
                     ),
-                    child: const Text('奶量统计'),
+                    child: const Text('身高'),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => setState(() => _selectedTab = 2),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _selectedTab == 2 ? Colors.orange.shade100 : Colors.grey.shade200,
+                    ),
+                    child: const Text('奶量'),
                   ),
                 ),
               ],
             ),
           ),
           Expanded(
-            child: _selectedTab == 0 ? _buildWeightTab(cardColor) : _buildMilkTab(cardColor),
+            child: _selectedTab == 0
+                ? _buildWeightTab(cardColor)
+                : _selectedTab == 1
+                    ? _buildHeightTab(cardColor)
+                    : _buildMilkTab(cardColor),
           ),
         ],
       ),
@@ -398,22 +553,24 @@ class _WeightScreenState extends State<WeightScreen> {
                   const SizedBox(height: 12),
                   SizedBox(
                     height: 180,
-                    child: LineChart(
-                      LineChartData(
-                        gridData: const FlGridData(show: true, drawVerticalLine: false),
-                        titlesData: const FlTitlesData(show: false),
-                        borderData: FlBorderData(show: false),
-                        lineBarsData: [
-                          LineChartBarData(
-                            spots: _buildWeightSpots(),
-                            isCurved: true,
-                            color: Theme.of(context).colorScheme.primary,
-                            barWidth: 3,
-                            dotData: const FlDotData(show: false),
+                    child: _weightHistory.isEmpty
+                        ? const Center(child: Text('暂无数据'))
+                        : LineChart(
+                            LineChartData(
+                              gridData: const FlGridData(show: true, drawVerticalLine: false),
+                              titlesData: const FlTitlesData(show: false),
+                              borderData: FlBorderData(show: false),
+                              lineBarsData: [
+                                LineChartBarData(
+                                  spots: _buildWeightSpots(),
+                                  isCurved: true,
+                                  color: Colors.blue,
+                                  barWidth: 3,
+                                  dotData: const FlDotData(show: false),
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
-                    ),
                   )
                 ],
               ),
@@ -486,6 +643,114 @@ class _WeightScreenState extends State<WeightScreen> {
     );
   }
 
+  Widget _buildHeightTab(Color cardColor) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Card(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+            color: cardColor,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('身高曲线', style: Theme.of(context).textTheme.titleLarge),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 180,
+                    child: _heightHistory.isEmpty
+                        ? const Center(child: Text('暂无数据'))
+                        : LineChart(
+                            LineChartData(
+                              gridData: const FlGridData(show: true, drawVerticalLine: false),
+                              titlesData: const FlTitlesData(show: false),
+                              borderData: FlBorderData(show: false),
+                              lineBarsData: [
+                                LineChartBarData(
+                                  spots: _buildHeightSpots(),
+                                  isCurved: true,
+                                  color: Colors.green,
+                                  barWidth: 3,
+                                  dotData: const FlDotData(show: false),
+                                ),
+                              ],
+                            ),
+                          ),
+                  )
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Card(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+            color: cardColor,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('记录身高', style: Theme.of(context).textTheme.titleLarge),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _heightController,
+                          keyboardType: TextInputType.numberWithOptions(decimal: true),
+                          decoration: const InputDecoration(labelText: '身高 (cm)'),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(onPressed: _addHeight, child: const Text('保存')),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Card(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+            color: cardColor,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('历史记录', style: Theme.of(context).textTheme.titleLarge),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    height: 200,
+                    child: _heightHistory.isEmpty
+                        ? const Center(child: Text('暂无记录'))
+                        : ListView.builder(
+                            itemCount: _heightHistory.length,
+                            itemBuilder: (ctx, idx) {
+                              final e = _heightHistory[idx];
+                              final dateStr = _dateLabel(e.date);
+                              final timeStr = _timeLabel(e.date);
+                              return ListTile(
+                                title: Text('$dateStr $timeStr'),
+                                trailing: Text('${e.height.toStringAsFixed(1)} cm'),
+                                onTap: () => _editHeight(idx),
+                                onLongPress: () => _deleteHeight(idx),
+                              );
+                            },
+                          ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildMilkTab(Color cardColor) {
     final today = _getMilkTotalForDay(DateTime.now());
     final week = _getMilkTotalForWeek();
@@ -531,22 +796,24 @@ class _WeightScreenState extends State<WeightScreen> {
                   const SizedBox(height: 12),
                   SizedBox(
                     height: 180,
-                    child: LineChart(
-                      LineChartData(
-                        gridData: const FlGridData(show: true, drawVerticalLine: false),
-                        titlesData: const FlTitlesData(show: false),
-                        borderData: FlBorderData(show: false),
-                        lineBarsData: [
-                          LineChartBarData(
-                            spots: _buildMilkSpots(),
-                            isCurved: true,
-                            color: Colors.orange,
-                            barWidth: 3,
-                            dotData: const FlDotData(show: false),
+                    child: _milkHistory.isEmpty
+                        ? const Center(child: Text('暂无数据'))
+                        : LineChart(
+                            LineChartData(
+                              gridData: const FlGridData(show: true, drawVerticalLine: false),
+                              titlesData: const FlTitlesData(show: false),
+                              borderData: FlBorderData(show: false),
+                              lineBarsData: [
+                                LineChartBarData(
+                                  spots: _buildMilkSpots(),
+                                  isCurved: true,
+                                  color: Colors.orange,
+                                  barWidth: 3,
+                                  dotData: const FlDotData(show: false),
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
-                    ),
                   )
                 ],
               ),

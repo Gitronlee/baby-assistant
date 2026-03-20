@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AboutScreen extends StatelessWidget {
-  const AboutScreen({Key? key}) : super(key: key);
+  const AboutScreen({super.key});
   @override
   Widget build(BuildContext context) {
     final String appName = 'Baby Assistant';
@@ -21,7 +21,7 @@ class AboutScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(appName, style: Theme.of(context).textTheme.headline5),
+                  Text(appName, style: Theme.of(context).textTheme.headlineSmall),
                   const SizedBox(height: 8),
                   Text('Version: $version'),
                   const SizedBox(height: 8),

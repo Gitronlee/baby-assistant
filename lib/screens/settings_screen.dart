@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  const SettingsScreen({super.key});
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
 }
@@ -56,7 +56,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Audio & Feeding Settings', style: Theme.of(context).textTheme.headline6),
+                  Text('Audio & Feeding Settings', style: Theme.of(context).textTheme.titleLarge),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
                     value: _selectedNoise,

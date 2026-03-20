@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:fl_chart/fl_chart.dart';
 
 class WeightScreen extends StatefulWidget {
-  const WeightScreen({Key? key}) : super(key: key);
+  const WeightScreen({super.key});
   @override
   _WeightScreenState createState() => _WeightScreenState();
 }
@@ -97,7 +97,7 @@ class _WeightScreenState extends State<WeightScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Growth Chart', style: Theme.of(context).textTheme.headline6),
+                    Text('Growth Chart', style: Theme.of(context).textTheme.titleLarge),
                     const SizedBox(height: 12),
                     SizedBox(
                       height: 180,
@@ -131,7 +131,7 @@ class _WeightScreenState extends State<WeightScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Add Weight', style: Theme.of(context).textTheme.headline6),
+                    Text('Add Weight', style: Theme.of(context).textTheme.titleLarge),
                     const SizedBox(height: 8),
                     Row(
                       children: [
@@ -159,12 +159,12 @@ class _WeightScreenState extends State<WeightScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('History', style: Theme.of(context).textTheme.headline6),
+                    Text('History', style: Theme.of(context).textTheme.titleLarge),
                     const SizedBox(height: 8),
                     SizedBox(
                       height: 200,
                       child: _history.isEmpty
-                          ? Center(child: Text('No records yet'))
+                          ? Center(child: const Text('No records yet'))
                           : ListView.builder(
                               itemCount: _history.length,
                               itemBuilder: (ctx, idx) {

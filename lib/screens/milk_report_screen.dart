@@ -4,7 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'dart:convert';
 
 class MilkReportScreen extends StatefulWidget {
-  const MilkReportScreen({Key? key}) : super(key: key);
+  const MilkReportScreen({super.key});
   @override
   _MilkReportScreenState createState() => _MilkReportScreenState();
 }
@@ -93,7 +93,7 @@ class _MilkReportScreenState extends State<MilkReportScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Totals', style: Theme.of(context).textTheme.headline6),
+                    Text('Totals', style: Theme.of(context).textTheme.titleLarge),
                     const SizedBox(height: 8),
                     _TotalsView(records: _records),
                     const SizedBox(height: 8),
@@ -142,7 +142,7 @@ class _MilkReportScreenState extends State<MilkReportScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Add Milk', style: Theme.of(context).textTheme.headline6),
+                    Text('Add Milk', style: Theme.of(context).textTheme.titleLarge),
                     const SizedBox(height: 8),
                     Row(
                       children: [

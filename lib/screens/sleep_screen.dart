@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class SleepScreen extends StatefulWidget {
-  const SleepScreen({Key? key}) : super(key: key);
+  const SleepScreen({super.key});
   @override
   _SleepScreenState createState() => _SleepScreenState();
 }
@@ -71,9 +71,9 @@ class _SleepScreenState extends State<SleepScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text("White Noise Sleep Aid", style: Theme.of(context).textTheme.headline6),
+                  Text("White Noise Sleep Aid", style: Theme.of(context).textTheme.titleLarge),
                   const SizedBox(height: 12),
-                  Text(_status, style: Theme.of(context).textTheme.subtitle1),
+                  Text(_status, style: Theme.of(context).textTheme.titleMedium),
                   const SizedBox(height: 16),
                   ElevatedButton(onPressed: _toggle, child: Text(_isPlaying ? "Pause" : "Play")),
                   const SizedBox(height: 8),

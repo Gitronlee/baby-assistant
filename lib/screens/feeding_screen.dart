@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'settings_screen.dart';
 import 'milk_report_screen.dart';
 
 class FeedingScreen extends StatefulWidget {
-  const FeedingScreen({Key? key}) : super(key: key);
+  const FeedingScreen({super.key});
   @override
   _FeedingScreenState createState() => _FeedingScreenState();
 }
@@ -58,7 +57,7 @@ class _FeedingScreenState extends State<FeedingScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Countdown Timer', style: Theme.of(context).textTheme.headline6),
+                  Text('Countdown Timer', style: Theme.of(context).textTheme.titleLarge),
                   const SizedBox(height: 12),
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),

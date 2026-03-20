@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:file_picker/file_picker.dart';
 import 'screens/weight_screen.dart';
 import 'screens/feeding_screen.dart';
 import 'screens/about_screen.dart';
@@ -220,9 +221,40 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _selectCustomAudio() async {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('请将音频文件放到 /storage/emulated/0/Download/ 目录下，文件名为 baby_sleep.mp3')),
-    );
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.audio,
+        allowMultiple: false,
+      );
+
+      if (result != null && result.files.single.path != null) {
+        final filePath = result.files.single.path!;
+        final wasPlaying = _isPlaying;
+        if (wasPlaying) await _audioPlayer.stop();
+
+        setState(() {
+          _customAudioPath = filePath;
+        });
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('custom_audio_path', filePath);
+
+        if (wasPlaying) {
+          await _play();
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('已选择音频: ${result.files.single.name}'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('选择文件失败: $e')),
+      );
+    }
   }
 
   @override

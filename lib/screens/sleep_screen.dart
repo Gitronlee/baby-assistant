@@ -10,7 +10,7 @@ class SleepScreen extends StatefulWidget {
 class _SleepScreenState extends State<SleepScreen> {
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool _isPlaying = false;
-  String _status = "Idle";
+  String _status = "空闲";
 
   @override
   void initState() {
@@ -20,15 +20,16 @@ class _SleepScreenState extends State<SleepScreen> {
 
   Future<void> _play() async {
     try {
-      await _audioPlayer.setSourceAsset("hair_dryer.mp3");
+      // 使用网络音频源（请替换为实际的吹风机白噪音URL）
+      await _audioPlayer.setSourceUrl("https://www.example.com/hair-dryer.mp3");
       await _audioPlayer.resume();
       setState(() {
         _isPlaying = true;
-        _status = "Playing hair dryer white noise…";
+        _status = "正在播放吹风机白噪音…";
       });
     } catch (e) {
       setState(() {
-        _status = "Error loading audio: $e";
+        _status = "加载音频失败: $e";
       });
     }
   }
@@ -37,7 +38,7 @@ class _SleepScreenState extends State<SleepScreen> {
     await _audioPlayer.pause();
     setState(() {
       _isPlaying = false;
-      _status = "Paused";
+      _status = "已暂停";
     });
   }
 
@@ -59,7 +60,7 @@ class _SleepScreenState extends State<SleepScreen> {
   Widget build(BuildContext context) {
     final cardColor = Theme.of(context).cardColor;
     return Scaffold(
-      appBar: AppBar(title: const Text("Sleep")),
+      appBar: AppBar(title: const Text("助眠")),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -71,14 +72,14 @@ class _SleepScreenState extends State<SleepScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text("White Noise Sleep Aid", style: Theme.of(context).textTheme.titleLarge),
+                  Text("白噪音助眠", style: Theme.of(context).textTheme.titleLarge),
                   const SizedBox(height: 12),
                   Text(_status, style: Theme.of(context).textTheme.titleMedium),
                   const SizedBox(height: 16),
-                  ElevatedButton(onPressed: _toggle, child: Text(_isPlaying ? "Pause" : "Play")),
+                  ElevatedButton(onPressed: _toggle, child: Text(_isPlaying ? "暂停" : "播放")),
                   const SizedBox(height: 8),
                   const Text(
-                    "This audio loops in the background. Ensure you have background playback permission enabled in your platform configs.",
+                    "音频将在后台循环播放。请确保已在平台配置中启用后台播放权限。",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 12, color: Colors.black54),
                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'screens/sleep_screen.dart';
 import 'screens/weight_screen.dart';
 import 'screens/feeding_screen.dart';
@@ -29,6 +30,16 @@ class BabyAssistantApp extends StatelessWidget {
           ),
         ),
       ),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('zh', 'CN'),
+        Locale('en', 'US'),
+      ],
+      locale: const Locale('zh', 'CN'),
       home: const HomeScreen(),
     );
   }

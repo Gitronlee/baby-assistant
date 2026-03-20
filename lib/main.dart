@@ -451,7 +451,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Card(
       color: backgroundColor,
       child: InkWell(
-        onTap: canFeed ? null : () => _showFeedingResetDialog(context),
+        onTap: () => _showFeedingResetDialog(context),
         onLongPress: () => _showFeedingSettings(context),
         borderRadius: BorderRadius.circular(20),
         child: Column(

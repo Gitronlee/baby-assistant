@@ -9,7 +9,7 @@ class AboutScreen extends StatelessWidget {
     final String developer = '开发者：OpenAI 模型协助';
     final String description = '一个帮助妈妈记录婴儿睡眠、喂养和成长的简易助手应用。';
     return Scaffold(
-      appBar: AppBar(title: const Text('About')),
+      appBar: AppBar(title: const Text('关于')),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

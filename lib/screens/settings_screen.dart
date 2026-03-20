@@ -43,7 +43,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final cardColor = Theme.of(context).cardColor;
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(title: const Text('设置')),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

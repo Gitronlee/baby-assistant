@@ -79,7 +79,7 @@ class _MilkReportScreenState extends State<MilkReportScreen> {
     final cardColor = Theme.of(context).cardColor;
     final spots = _buildSpots7or30();
     return Scaffold(
-      appBar: AppBar(title: const Text("Milk Report")),
+      appBar: AppBar(title: const Text("奶量统计")),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(

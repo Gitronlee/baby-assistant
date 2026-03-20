@@ -83,7 +83,7 @@ class _WeightScreenState extends State<WeightScreen> {
   Widget build(BuildContext context) {
     final cardColor = Theme.of(context).cardColor;
     return Scaffold(
-      appBar: AppBar(title: const Text("Weight")),
+      appBar: AppBar(title: const Text("小宝记重")),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(

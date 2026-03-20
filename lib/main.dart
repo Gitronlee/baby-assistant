@@ -6,7 +6,6 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:async';
 import 'screens/weight_screen.dart';
 import 'screens/about_screen.dart';
-import 'screens/settings_screen.dart';
 
 void main() {
   runApp(const BabyAssistantApp());

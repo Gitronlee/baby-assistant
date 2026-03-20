@@ -388,6 +388,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 context,
                 icon: Icons.monitor_weight,
                 title: '萌宝笔记',
+                subtitle: '记录体重奶量\n点击查看详情',
                 color: const Color(0xFFE8F5E9),
                 onTap: () {
                   Navigator.push(
@@ -403,6 +404,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 context,
                 icon: Icons.info_outline,
                 title: '关于',
+                subtitle: '版本信息与联系',
                 color: const Color(0xFFF3E5F5),
                 onTap: () {
                   Navigator.push(
@@ -458,10 +460,18 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 4),
               Text(
-                _customAudioPath != null ? '自定义' : _currentNoise,
+                _customAudioPath != null ? '自定义音频' : _currentNoise,
                 style: TextStyle(
                   fontSize: 12,
                   color: _isPlaying ? Colors.white70 : Colors.indigo.shade400,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                _isPlaying ? '点击暂停' : '点击播放 · 长按选择',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: _isPlaying ? Colors.white54 : Colors.indigo.shade300,
                 ),
               ),
             ],
@@ -735,6 +745,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required String title,
     required Color color,
     required VoidCallback onTap,
+    String? subtitle,
   }) {
     return Card(
       elevation: 4,
@@ -762,7 +773,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 size: 48,
                 color: Theme.of(context).colorScheme.primary,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               Text(
                 title,
                 style: const TextStyle(
@@ -770,6 +781,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              if (subtitle != null) ...[
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.grey.shade600,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ],
           ),
         ),

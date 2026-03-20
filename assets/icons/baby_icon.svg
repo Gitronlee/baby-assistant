@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="1024" height="1024" fill="#FFE4E1" rx="150"/>
+  
+  <!-- 脸部轮廓 -->
+  <circle cx="512" cy="512" r="350" fill="#FFDAB9"/>
+  
+  <!-- 头发 -->
+  <path d="M300 350 Q400 250 512 280 Q624 250 724 350 Q750 450 700 500 Q650 450 512 400 Q374 450 324 500 Q274 450 300 350" fill="#8B4513"/>
+  
+  <!-- 眼睛 -->
+  <ellipse cx="400" cy="450" rx="50" ry="60" fill="white"/>
+  <ellipse cx="624" cy="450" rx="50" ry="60" fill="white"/>
+  <circle cx="400" cy="450" r="30" fill="#4A4A4A"/>
+  <circle cx="624" cy="450" r="30" fill="#4A4A4A"/>
+  <circle cx="390" cy="440" r="10" fill="white"/>
+  <circle cx="614" cy="440" r="10" fill="white"/>
+  
+  <!-- 腮红 -->
+  <ellipse cx="350" cy="550" rx="40" ry="25" fill="#FFB6C1" opacity="0.6"/>
+  <ellipse cx="674" cy="550" rx="40" ry="25" fill="#FFB6C1" opacity="0.6"/>
+  
+  <!-- 嘴巴 -->
+  <path d="M450 600 Q512 650 574 600" stroke="#FF6B6B" stroke-width="8" fill="none" stroke-linecap="round"/>
+  
+  <!-- 鼻子 -->
+  <ellipse cx="512" cy="530" rx="20" ry="15" fill="#FFDAB9"/>
+  
+  <!-- 耳朵 -->
+  <ellipse cx="250" cy="450" rx="40" ry="60" fill="#FFDAB9"/>
+  <ellipse cx="774" cy="450" rx="40" ry="60" fill="#FFDAB9"/>
+  
+  <!-- 奶嘴 -->
+  <ellipse cx="512" cy="750" rx="80" ry="40" fill="#FFB6C1"/>
+  <rect x="472" y="700" width="80" height="60" fill="#FFB6C1"/>
+  <ellipse cx="512" cy="700" rx="30" ry="15" fill="#FF69B4"/>
+  
+  <!-- 文字 -->
+  <text x="512" y="950" font-family="Arial, sans-serif" font-size="80" font-weight="bold" fill="#FF69B4" text-anchor="middle">小宝助手</text>
+</svg>

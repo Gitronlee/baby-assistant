@@ -386,7 +386,7 @@ class _HomeScreenState extends State<HomeScreen> {
               _buildSleepCard(context),
               _buildGridItem(
                 context,
-                icon: Icons.monitor_weight,
+                icon: Icons.child_care,
                 title: '成长轨迹',
                 middleText: '记录成长数据',
                 subtitle: '点击查看详情',
@@ -449,7 +449,7 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  _isPlaying ? Icons.pause_circle_filled : Icons.play_circle_filled,
+                  _isPlaying ? Icons.nightlight_round : Icons.nightlight_outlined,
                   size: 48,
                   color: _isPlaying ? Colors.white : Colors.indigo.shade400,
                 ),
@@ -457,7 +457,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   '助眠白噪声',
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: _isPlaying ? Colors.white : Colors.indigo.shade700,
                   ),
@@ -514,7 +514,7 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  canFeed ? Icons.check_circle : Icons.timer,
+                  canFeed ? Icons.baby_changing_station : Icons.local_drink,
                   size: 48,
                   color: canFeed ? Colors.green.shade800 : Colors.orange.shade800,
                 ),
@@ -522,7 +522,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   canFeed ? '可以喂奶了' : '距离下次喂奶',
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: canFeed ? Colors.green.shade800 : Colors.orange.shade800,
                   ),
@@ -789,7 +789,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   title,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Colors.grey.shade700,
                   ),

@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:async';
+import 'dart:ui';
 import 'screens/weight_screen.dart';
 import 'screens/about_screen.dart';
 
@@ -24,14 +25,7 @@ class BabyAssistantApp extends StatelessWidget {
           brightness: Brightness.light,
         ),
         useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xFFFFF5F5),
-        cardTheme: CardTheme(
-          elevation: 4,
-          shadowColor: Colors.pink.shade200.withOpacity(0.4),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-        ),
+        scaffoldBackgroundColor: const Color(0xFFF8E8E8),
         appBarTheme: AppBarTheme(
           backgroundColor: Colors.transparent,
           foregroundColor: Colors.brown.shade700,
@@ -45,9 +39,9 @@ class BabyAssistantApp extends StatelessWidget {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFFFB6C1),
+            backgroundColor: const Color(0xFFFFB6C1).withOpacity(0.9),
             foregroundColor: Colors.white,
-            elevation: 2,
+            elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
@@ -56,14 +50,14 @@ class BabyAssistantApp extends StatelessWidget {
         ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: Colors.white,
+          fillColor: Colors.white.withOpacity(0.8),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: Colors.pink.shade100),
+            borderSide: BorderSide(color: Colors.white.withOpacity(0.5)),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: Colors.pink.shade300, width: 2),
+            borderSide: BorderSide(color: Colors.pink.shade200, width: 2),
           ),
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         ),
@@ -189,75 +183,117 @@ class _HomeScreenState extends State<HomeScreen> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(2),
+      builder: (context) => ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.white.withOpacity(0.9),
+                  Colors.white.withOpacity(0.85),
+                ],
               ),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              '选择白噪音',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            ...List.generate(_defaultNoises.length, (index) {
-              final noise = _defaultNoises.keys.elementAt(index);
-              final isSelected = noise == _currentNoise && _customAudioPath == null;
-              return ListTile(
-                leading: Icon(
-                  _getNoiseIcon(noise),
-                  color: isSelected ? Colors.pink : Colors.grey,
+              border: Border.all(
+                color: Colors.white.withOpacity(0.5),
+                width: 1,
+              ),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 20,
+                  offset: const Offset(0, -5),
                 ),
-                title: Text(
-                  noise,
-                  style: TextStyle(
-                    color: isSelected ? Colors.pink : Colors.black87,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ],
+            ),
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-                trailing: isSelected
-                    ? const Icon(Icons.check_circle, color: Colors.pink)
-                    : null,
-                onTap: () {
-                  Navigator.pop(context);
-                  _switchNoise(noise);
-                },
-              );
-            }),
-            ListTile(
-              leading: Icon(
-                Icons.upload_file,
-                color: _customAudioPath != null ? Colors.pink : Colors.grey,
-              ),
-              title: Text(
-                '自定义音频',
-                style: TextStyle(
-                  color: _customAudioPath != null ? Colors.pink : Colors.black87,
-                  fontWeight: _customAudioPath != null ? FontWeight.bold : FontWeight.normal,
+                const SizedBox(height: 20),
+                Text(
+                  '选择白噪音',
+                  style: TextStyle(
+                    fontSize: 18, 
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade800,
+                  ),
                 ),
-              ),
-              trailing: _customAudioPath != null
-                  ? const Icon(Icons.check_circle, color: Colors.pink)
-                  : null,
-              onTap: () {
-                Navigator.pop(context);
-                _selectCustomAudio();
-              },
+                const SizedBox(height: 16),
+                ...List.generate(_defaultNoises.length, (index) {
+                  final noise = _defaultNoises.keys.elementAt(index);
+                  final isSelected = noise == _currentNoise && _customAudioPath == null;
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 4),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: isSelected ? Colors.pink.shade50.withOpacity(0.5) : Colors.transparent,
+                    ),
+                    child: ListTile(
+                      leading: Icon(
+                        _getNoiseIcon(noise),
+                        color: isSelected ? Colors.pink : Colors.grey.shade600,
+                      ),
+                      title: Text(
+                        noise,
+                        style: TextStyle(
+                          color: isSelected ? Colors.pink.shade700 : Colors.grey.shade800,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        ),
+                      ),
+                      trailing: isSelected
+                          ? Icon(Icons.check_circle, color: Colors.pink.shade400)
+                          : null,
+                      onTap: () {
+                        Navigator.pop(context);
+                        _switchNoise(noise);
+                      },
+                    ),
+                  );
+                }),
+                Container(
+                  margin: const EdgeInsets.only(top: 4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: _customAudioPath != null ? Colors.pink.shade50.withOpacity(0.5) : Colors.transparent,
+                  ),
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.upload_file,
+                      color: _customAudioPath != null ? Colors.pink : Colors.grey.shade600,
+                    ),
+                    title: Text(
+                      '自定义音频',
+                      style: TextStyle(
+                        color: _customAudioPath != null ? Colors.pink.shade700 : Colors.grey.shade800,
+                        fontWeight: _customAudioPath != null ? FontWeight.bold : FontWeight.normal,
+                      ),
+                    ),
+                    trailing: _customAudioPath != null
+                        ? Icon(Icons.check_circle, color: Colors.pink.shade400)
+                        : null,
+                    onTap: () {
+                      Navigator.pop(context);
+                      _selectCustomAudio();
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
             ),
-            const SizedBox(height: 16),
-          ],
+          ),
         ),
       ),
     );
@@ -351,122 +387,267 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
 
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFFFF5F5),
-              Color(0xFFFFE4E1),
-              Color(0xFFFFDAB9),
-            ],
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: GridView.count(
-            crossAxisCount: 2,
-            mainAxisSpacing: 16,
-            crossAxisSpacing: 16,
-            children: [
-              _buildSleepCard(context),
-              _buildGridItem(
-                context,
-                icon: Icons.child_care,
-                title: '成长轨迹',
-                middleText: '记录成长数据',
-                subtitle: '点击查看详情',
-                color: const Color(0xFFE8F5E9),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const WeightScreen(),
-                    ),
-                  );
-                },
+      body: Stack(
+        children: [
+          // 底层渐变背景
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color(0xFFFFF5F5),
+                  Color(0xFFFFE4E1),
+                  Color(0xFFFFDAB9),
+                  Color(0xFFE8F5E9),
+                ],
               ),
-              _buildFeedingCard(context),
-              _buildGridItem(
-                context,
-                icon: Icons.info_outline,
-                title: '关于',
-                middleText: '版本信息',
-                subtitle: '点击查看详情',
-                color: const Color(0xFFF3E5F5),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const AboutScreen(),
-                    ),
-                  );
-                },
-              ),
-            ],
+            ),
           ),
-        ),
+          // 装饰圆形 - 增加层次感
+          Positioned(
+            top: -80,
+            right: -60,
+            child: Container(
+              width: 200,
+              height: 200,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    Colors.pink.shade200.withOpacity(0.4),
+                    Colors.pink.shade100.withOpacity(0.1),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 100,
+            left: -80,
+            child: Container(
+              width: 250,
+              height: 250,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    Colors.green.shade200.withOpacity(0.3),
+                    Colors.green.shade100.withOpacity(0.1),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 200,
+            right: -40,
+            child: Container(
+              width: 150,
+              height: 150,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    Colors.orange.shade200.withOpacity(0.3),
+                    Colors.orange.shade100.withOpacity(0.1),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          // 主内容
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: GridView.count(
+                crossAxisCount: 2,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                children: [
+                  _buildSleepCard(context),
+                  _buildGridItem(
+                    context,
+                    icon: Icons.child_care,
+                    title: '成长轨迹',
+                    middleText: '记录成长数据',
+                    subtitle: '点击查看详情',
+                    gradientColors: [
+                      Colors.green.shade300,
+                      Colors.teal.shade300,
+                    ],
+                    iconColor: Colors.green.shade700,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const WeightScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  _buildFeedingCard(context),
+                  _buildGridItem(
+                    context,
+                    icon: Icons.info_outline,
+                    title: '关于',
+                    middleText: '版本信息',
+                    subtitle: '点击查看详情',
+                    gradientColors: [
+                      Colors.purple.shade200,
+                      Colors.indigo.shade200,
+                    ],
+                    iconColor: Colors.purple.shade700,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AboutScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildSleepCard(BuildContext context) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: _isPlaying
-                ? [const Color(0xFF7986CB), const Color(0xFF5C6BC0)]
-                : [const Color(0xFFE8EAF6), const Color(0xFFC5CAE9)],
+    final isActive = _isPlaying;
+    
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(28),
+        // 多层阴影创造厚度感
+        boxShadow: [
+          BoxShadow(
+            color: isActive 
+                ? Colors.indigo.shade400.withOpacity(0.4)
+                : Colors.indigo.shade200.withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+            spreadRadius: 0,
           ),
-        ),
-        child: InkWell(
-          onTap: _toggleSleep,
-          onLongPress: _showNoiseSelector,
-          borderRadius: BorderRadius.circular(24),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  _isPlaying ? Icons.nightlight_round : Icons.nightlight_outlined,
-                  size: 48,
-                  color: _isPlaying ? Colors.white : Colors.indigo.shade400,
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  '助眠白噪声',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: _isPlaying ? Colors.white : Colors.indigo.shade700,
+          BoxShadow(
+            color: isActive 
+                ? Colors.indigo.shade300.withOpacity(0.2)
+                : Colors.indigo.shade100.withOpacity(0.2),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(28),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(28),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: isActive
+                    ? [
+                        Colors.indigo.shade400.withOpacity(0.7),
+                        Colors.indigo.shade600.withOpacity(0.5),
+                      ]
+                    : [
+                        Colors.white.withOpacity(0.7),
+                        Colors.indigo.shade50.withOpacity(0.5),
+                      ],
+              ),
+              border: Border.all(
+                color: isActive 
+                    ? Colors.white.withOpacity(0.3)
+                    : Colors.white.withOpacity(0.6),
+                width: 1.5,
+              ),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: _toggleSleep,
+                onLongPress: _showNoiseSelector,
+                borderRadius: BorderRadius.circular(28),
+                splashColor: Colors.indigo.withOpacity(0.1),
+                highlightColor: Colors.indigo.withOpacity(0.05),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // 图标容器 - 增加厚度感
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: isActive
+                                ? [
+                                    Colors.white.withOpacity(0.3),
+                                    Colors.white.withOpacity(0.1),
+                                  ]
+                                : [
+                                    Colors.indigo.shade100.withOpacity(0.6),
+                                    Colors.indigo.shade50.withOpacity(0.4),
+                                  ],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: isActive 
+                                  ? Colors.white.withOpacity(0.2)
+                                  : Colors.indigo.shade200.withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          isActive ? Icons.nightlight_round : Icons.nightlight_outlined,
+                          size: 36,
+                          color: isActive ? Colors.white : Colors.indigo.shade500,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        '助眠白噪声',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: isActive ? Colors.white.withOpacity(0.9) : Colors.indigo.shade700,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _customAudioPath != null ? '自定义音频' : _currentNoise,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: isActive ? Colors.white : Colors.indigo.shade600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        isActive ? '点击暂停' : '点击播放 · 长按选择',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: isActive 
+                              ? Colors.white.withOpacity(0.7)
+                              : Colors.indigo.shade400,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  _customAudioPath != null ? '自定义音频' : _currentNoise,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: _isPlaying ? Colors.white70 : Colors.indigo.shade400,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  _isPlaying ? '点击暂停' : '点击播放 · 长按选择',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: _isPlaying ? Colors.white54 : Colors.indigo.shade300,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
@@ -476,63 +657,126 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildFeedingCard(BuildContext context) {
     final canFeed = _feedingRemaining.isNegative || _feedingRemaining == Duration.zero;
-
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: canFeed
-                ? [const Color(0xFFA5D6A7), const Color(0xFF81C784)]
-                : [const Color(0xFFFFCC80), const Color(0xFFFFB74D)],
+    
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(28),
+        // 多层阴影创造厚度感
+        boxShadow: [
+          BoxShadow(
+            color: canFeed 
+                ? Colors.green.shade400.withOpacity(0.4)
+                : Colors.orange.shade400.withOpacity(0.4),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+            spreadRadius: 0,
           ),
-        ),
-        child: InkWell(
-          onTap: () => _showFeedingResetDialog(context),
-          onLongPress: () => _showFeedingSettings(context),
-          borderRadius: BorderRadius.circular(24),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  canFeed ? Icons.baby_changing_station : Icons.local_drink,
-                  size: 48,
-                  color: canFeed ? Colors.green.shade800 : Colors.orange.shade800,
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  canFeed ? '可以喂奶了' : '距离下次喂奶',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: canFeed ? Colors.green.shade800 : Colors.orange.shade800,
+          BoxShadow(
+            color: canFeed 
+                ? Colors.green.shade300.withOpacity(0.2)
+                : Colors.orange.shade300.withOpacity(0.2),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(28),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(28),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: canFeed
+                    ? [
+                        Colors.green.shade400.withOpacity(0.7),
+                        Colors.green.shade600.withOpacity(0.5),
+                      ]
+                    : [
+                        Colors.orange.shade300.withOpacity(0.7),
+                        Colors.orange.shade500.withOpacity(0.5),
+                      ],
+              ),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.4),
+                width: 1.5,
+              ),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => _showFeedingResetDialog(context),
+                onLongPress: () => _showFeedingSettings(context),
+                borderRadius: BorderRadius.circular(28),
+                splashColor: (canFeed ? Colors.green : Colors.orange).withOpacity(0.1),
+                highlightColor: (canFeed ? Colors.green : Colors.orange).withOpacity(0.05),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // 图标容器 - 增加厚度感
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.white.withOpacity(0.3),
+                              Colors.white.withOpacity(0.1),
+                            ],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.white.withOpacity(0.2),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          canFeed ? Icons.baby_changing_station : Icons.local_drink,
+                          size: 36,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        canFeed ? '可以喂奶了' : '距离下次喂奶',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white.withOpacity(0.9),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        _formatFeedingDuration(_feedingRemaining),
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontFamily: 'monospace',
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '长按设置',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.white.withOpacity(0.7),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  _formatFeedingDuration(_feedingRemaining),
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: canFeed ? Colors.green.shade900 : Colors.orange.shade900,
-                    fontFamily: 'monospace',
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '长按设置',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: canFeed ? Colors.green.shade600 : Colors.orange.shade600,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
@@ -557,22 +801,50 @@ class _HomeScreenState extends State<HomeScreen> {
   void _showFeedingResetDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('重新计时'),
-        content: const Text('确定要重新开始计时吗？\n将清除下次提醒时间，仅以间隔时间倒计时。'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('取消'),
+      builder: (context) => BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: AlertDialog(
+          backgroundColor: Colors.white.withOpacity(0.95),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+            side: BorderSide(
+              color: Colors.white.withOpacity(0.5),
+              width: 1,
+            ),
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _resetFeedingTimer();
-            },
-            child: const Text('确定'),
+          elevation: 20,
+          shadowColor: Colors.black.withOpacity(0.2),
+          title: Text(
+            '重新计时',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade800,
+            ),
           ),
-        ],
+          content: Text(
+            '确定要重新开始计时吗？\n将清除下次提醒时间，仅以间隔时间倒计时。',
+            style: TextStyle(color: Colors.grey.shade700),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.grey.shade600,
+              ),
+              child: const Text('取消'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _resetFeedingTimer();
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.pink.shade400,
+              ),
+              child: const Text('确定'),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -582,60 +854,126 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (context) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(2),
+      builder: (context) => ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.white.withOpacity(0.9),
+                  Colors.white.withOpacity(0.85),
+                ],
               ),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.5),
+                width: 1,
+              ),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 20,
+                  offset: const Offset(0, -5),
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
-            const Text(
-              '喂奶设置',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  '喂奶设置',
+                  style: TextStyle(
+                    fontSize: 18, 
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade800,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.grey.shade50.withOpacity(0.5),
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      '喂奶间隔',
+                      style: TextStyle(color: Colors.grey.shade800),
+                    ),
+                    subtitle: Text(
+                      '${_intervalMinutes ~/ 60}小时${_intervalMinutes % 60}分钟',
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
+                    trailing: Icon(Icons.chevron_right, color: Colors.grey.shade600),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _showIntervalPicker(context);
+                    },
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.grey.shade50.withOpacity(0.5),
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      '应喂奶时间',
+                      style: TextStyle(color: Colors.grey.shade800),
+                    ),
+                    subtitle: Text(
+                      _nextFeedingTime != null
+                          ? '${_nextFeedingTime!.hour.toString().padLeft(2, '0')}:${_nextFeedingTime!.minute.toString().padLeft(2, '0')}'
+                          : '未设置',
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
+                    trailing: Icon(Icons.chevron_right, color: Colors.grey.shade600),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _showTimePicker(context);
+                    },
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.grey.shade50.withOpacity(0.5),
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      '重新计时',
+                      style: TextStyle(color: Colors.grey.shade800),
+                    ),
+                    subtitle: Text(
+                      '复位倒计时，重新开始',
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
+                    trailing: Icon(Icons.refresh, color: Colors.grey.shade600),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _resetFeedingTimer();
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
+              ],
             ),
-            const SizedBox(height: 20),
-            ListTile(
-              title: const Text('喂奶间隔'),
-              subtitle: Text('${_intervalMinutes ~/ 60}小时${_intervalMinutes % 60}分钟'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                Navigator.pop(context);
-                _showIntervalPicker(context);
-              },
-            ),
-            ListTile(
-              title: const Text('应喂奶时间'),
-              subtitle: Text(_nextFeedingTime != null
-                  ? '${_nextFeedingTime!.hour.toString().padLeft(2, '0')}:${_nextFeedingTime!.minute.toString().padLeft(2, '0')}'
-                  : '未设置'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                Navigator.pop(context);
-                _showTimePicker(context);
-              },
-            ),
-            ListTile(
-              title: const Text('重新计时'),
-              subtitle: const Text('复位倒计时，重新开始'),
-              trailing: const Icon(Icons.refresh),
-              onTap: () {
-                Navigator.pop(context);
-                _resetFeedingTimer();
-              },
-            ),
-            const SizedBox(height: 16),
-          ],
+          ),
         ),
       ),
     );
@@ -648,65 +986,126 @@ class _HomeScreenState extends State<HomeScreen> {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('设置喂奶间隔'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 80,
-                  child: TextField(
-                    controller: hoursController,
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.center,
-                    decoration: const InputDecoration(labelText: '小时'),
+      builder: (context) => BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: AlertDialog(
+          backgroundColor: Colors.white.withOpacity(0.95),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+            side: BorderSide(
+              color: Colors.white.withOpacity(0.5),
+              width: 1,
+            ),
+          ),
+          elevation: 20,
+          shadowColor: Colors.black.withOpacity(0.2),
+          title: Text(
+            '设置喂奶间隔',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade800,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 80,
+                    child: TextField(
+                      controller: hoursController,
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.grey.shade800),
+                      decoration: InputDecoration(
+                        labelText: '小时',
+                        labelStyle: TextStyle(color: Colors.grey.shade600),
+                        filled: true,
+                        fillColor: Colors.grey.shade50.withOpacity(0.5),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.grey.shade200),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.grey.shade200),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.pink.shade300),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 16),
-                const Text(':', style: TextStyle(fontSize: 24)),
-                const SizedBox(width: 16),
-                SizedBox(
-                  width: 80,
-                  child: TextField(
-                    controller: minutesController,
-                    keyboardType: TextInputType.number,
-                    textAlign: TextAlign.center,
-                    decoration: const InputDecoration(labelText: '分钟'),
+                  const SizedBox(width: 16),
+                  const Text(':', style: TextStyle(fontSize: 24)),
+                  const SizedBox(width: 16),
+                  SizedBox(
+                    width: 80,
+                    child: TextField(
+                      controller: minutesController,
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.grey.shade800),
+                      decoration: InputDecoration(
+                        labelText: '分钟',
+                        labelStyle: TextStyle(color: Colors.grey.shade600),
+                        filled: true,
+                        fillColor: Colors.grey.shade50.withOpacity(0.5),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.grey.shade200),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.grey.shade200),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.pink.shade300),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.grey.shade600,
+              ),
+              child: const Text('取消'),
+            ),
+            TextButton(
+              onPressed: () async {
+                final newHours = int.tryParse(hoursController.text) ?? 0;
+                final newMinutes = int.tryParse(minutesController.text) ?? 0;
+                final newInterval = newHours * 60 + newMinutes;
+                if (newInterval > 0) {
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.setInt('feeding_interval', newInterval);
+                  if (mounted) {
+                    setState(() {
+                      _intervalMinutes = newInterval;
+                      _nextFeedingTime = DateTime.now().add(Duration(minutes: newInterval));
+                    });
+                  }
+                  await prefs.setString('next_feeding_time', _nextFeedingTime!.toIso8601String());
+                }
+                navigator.pop();
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.pink.shade400,
+              ),
+              child: const Text('确定'),
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('取消'),
-          ),
-          TextButton(
-            onPressed: () async {
-              final newHours = int.tryParse(hoursController.text) ?? 0;
-              final newMinutes = int.tryParse(minutesController.text) ?? 0;
-              final newInterval = newHours * 60 + newMinutes;
-              if (newInterval > 0) {
-                final prefs = await SharedPreferences.getInstance();
-                await prefs.setInt('feeding_interval', newInterval);
-                if (mounted) {
-                  setState(() {
-                    _intervalMinutes = newInterval;
-                    _nextFeedingTime = DateTime.now().add(Duration(minutes: newInterval));
-                  });
-                }
-                await prefs.setString('next_feeding_time', _nextFeedingTime!.toIso8601String());
-              }
-              navigator.pop();
-            },
-            child: const Text('确定'),
-          ),
-        ],
       ),
     );
   }
@@ -739,73 +1138,127 @@ class _HomeScreenState extends State<HomeScreen> {
     BuildContext context, {
     required IconData icon,
     required String title,
-    required Color color,
+    required List<Color> gradientColors,
+    required Color iconColor,
     required VoidCallback onTap,
     String? middleText,
     String? subtitle,
   }) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              color,
-              color.withOpacity(0.7),
-            ],
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(28),
+        // 多层阴影创造厚度感
+        boxShadow: [
+          BoxShadow(
+            color: gradientColors.first.withOpacity(0.4),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+            spreadRadius: 0,
           ),
-        ),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(24),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  icon,
-                  size: 48,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade700,
-                  ),
-                ),
-                if (middleText != null) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    middleText,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey.shade800,
-                    ),
-                  ),
+          BoxShadow(
+            color: gradientColors.first.withOpacity(0.2),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(28),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(28),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  gradientColors.first.withOpacity(0.6),
+                  gradientColors.last.withOpacity(0.4),
                 ],
-                if (subtitle != null) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: Colors.grey.shade600,
-                    ),
-                    textAlign: TextAlign.center,
+              ),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.5),
+                width: 1.5,
+              ),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(28),
+                splashColor: gradientColors.first.withOpacity(0.1),
+                highlightColor: gradientColors.first.withOpacity(0.05),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // 图标容器 - 增加厚度感
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.white.withOpacity(0.4),
+                              Colors.white.withOpacity(0.2),
+                            ],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: gradientColors.first.withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          icon,
+                          size: 36,
+                          color: iconColor,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white.withOpacity(0.95),
+                        ),
+                      ),
+                      if (middleText != null) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          middleText,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                      if (subtitle != null) ...[
+                        const SizedBox(height: 4),
+                        Text(
+                          subtitle,
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.white.withOpacity(0.7),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ] else if (middleText == null) ...[
+                        const SizedBox(height: 20),
+                      ],
+                    ],
                   ),
-                ] else if (middleText == null) ...[
-                  const SizedBox(height: 20),
-                ],
-              ],
+                ),
+              ),
             ),
           ),
         ),

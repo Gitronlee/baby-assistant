@@ -595,35 +595,28 @@ class _HomeScreenState extends State<HomeScreen> {
           // 底层深阴影 - 模拟卡片底部接触面
           BoxShadow(
             color: isActive 
-                ? Colors.indigo.shade900.withOpacity(0.45)
-                : Colors.grey.shade400.withOpacity(0.35),
-            blurRadius: 0,
-            offset: const Offset(0, 10),
+                ? Colors.indigo.shade900.withOpacity(0.35)
+                : Colors.grey.shade400.withOpacity(0.28),
+            blurRadius: 12,
+            offset: const Offset(0, 8),
             spreadRadius: 0,
           ),
           // 中层柔和阴影 - 过渡效果
           BoxShadow(
             color: isActive 
-                ? Colors.indigo.shade700.withOpacity(0.35)
-                : Colors.grey.shade300.withOpacity(0.3),
-            blurRadius: 7,
-            offset: const Offset(0, 6),
-            spreadRadius: -2,
+                ? Colors.indigo.shade700.withOpacity(0.28)
+                : Colors.grey.shade300.withOpacity(0.22),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+            spreadRadius: 0,
           ),
           // 上层模糊阴影 - 悬浮效果
           BoxShadow(
             color: isActive 
-                ? Colors.indigo.shade500.withOpacity(0.28)
-                : Colors.indigo.shade200.withOpacity(0.22),
-            blurRadius: 18,
-            offset: const Offset(0, 3),
-            spreadRadius: 0,
-          ),
-          // 顶部高光 - 增强立体感
-          BoxShadow(
-            color: Colors.white.withOpacity(0.75),
-            blurRadius: 0,
-            offset: const Offset(0, -1),
+                ? Colors.indigo.shade500.withOpacity(0.2)
+                : Colors.indigo.shade200.withOpacity(0.18),
+            blurRadius: 14,
+            offset: const Offset(0, 2),
             spreadRadius: 0,
           ),
         ],
@@ -645,7 +638,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         child: Container(
-          margin: const EdgeInsets.only(bottom: 5),
+          margin: const EdgeInsets.only(bottom: 4),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
             gradient: LinearGradient(
@@ -812,35 +805,28 @@ class _HomeScreenState extends State<HomeScreen> {
           // 底层深阴影 - 模拟卡片底部接触面
           BoxShadow(
             color: canFeed 
-                ? Colors.green.shade900.withOpacity(0.45)
-                : Colors.orange.shade900.withOpacity(0.45),
-            blurRadius: 0,
-            offset: const Offset(0, 10),
+                ? Colors.green.shade900.withOpacity(0.35)
+                : Colors.orange.shade900.withOpacity(0.35),
+            blurRadius: 12,
+            offset: const Offset(0, 8),
             spreadRadius: 0,
           ),
           // 中层柔和阴影 - 过渡效果
           BoxShadow(
             color: canFeed 
-                ? Colors.green.shade700.withOpacity(0.35)
-                : Colors.orange.shade700.withOpacity(0.35),
-            blurRadius: 7,
-            offset: const Offset(0, 6),
-            spreadRadius: -2,
+                ? Colors.green.shade700.withOpacity(0.28)
+                : Colors.orange.shade700.withOpacity(0.28),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+            spreadRadius: 0,
           ),
           // 上层模糊阴影 - 悬浮效果
           BoxShadow(
             color: canFeed 
-                ? Colors.green.shade500.withOpacity(0.28)
-                : Colors.orange.shade500.withOpacity(0.28),
-            blurRadius: 18,
-            offset: const Offset(0, 3),
-            spreadRadius: 0,
-          ),
-          // 顶部高光 - 增强立体感
-          BoxShadow(
-            color: Colors.white.withOpacity(0.75),
-            blurRadius: 0,
-            offset: const Offset(0, -1),
+                ? Colors.green.shade500.withOpacity(0.2)
+                : Colors.orange.shade500.withOpacity(0.2),
+            blurRadius: 14,
+            offset: const Offset(0, 2),
             spreadRadius: 0,
           ),
         ],
@@ -862,7 +848,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         child: Container(
-          margin: const EdgeInsets.only(bottom: 5),
+          margin: const EdgeInsets.only(bottom: 4),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
             gradient: LinearGradient(
@@ -1375,30 +1361,23 @@ class _HomeScreenState extends State<HomeScreen> {
         boxShadow: [
           // 底层深阴影 - 模拟卡片底部接触面
           BoxShadow(
-            color: gradientColors.last.withOpacity(0.45),
-            blurRadius: 0,
-            offset: const Offset(0, 10),
+            color: gradientColors.last.withOpacity(0.35),
+            blurRadius: 12,
+            offset: const Offset(0, 8),
             spreadRadius: 0,
           ),
           // 中层柔和阴影 - 过渡效果
           BoxShadow(
-            color: gradientColors.last.withOpacity(0.35),
-            blurRadius: 7,
-            offset: const Offset(0, 6),
-            spreadRadius: -2,
+            color: gradientColors.last.withOpacity(0.28),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+            spreadRadius: 0,
           ),
           // 上层模糊阴影 - 悬浮效果
           BoxShadow(
-            color: gradientColors.first.withOpacity(0.28),
-            blurRadius: 18,
-            offset: const Offset(0, 3),
-            spreadRadius: 0,
-          ),
-          // 顶部高光 - 增强立体感
-          BoxShadow(
-            color: Colors.white.withOpacity(0.75),
-            blurRadius: 0,
-            offset: const Offset(0, -1),
+            color: gradientColors.first.withOpacity(0.2),
+            blurRadius: 14,
+            offset: const Offset(0, 2),
             spreadRadius: 0,
           ),
         ],
@@ -1418,7 +1397,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         child: Container(
-          margin: const EdgeInsets.only(bottom: 5),
+          margin: const EdgeInsets.only(bottom: 4),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
             gradient: LinearGradient(

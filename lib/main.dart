@@ -101,6 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _intervalMinutes = 180;
   DateTime? _nextFeedingTime;
   Duration _feedingRemaining = Duration.zero;
+  bool _isSettingsLoaded = false;
 
   @override
   void initState() {
@@ -123,6 +124,10 @@ class _HomeScreenState extends State<HomeScreen> {
         _nextFeedingTime = DateTime.now().add(Duration(minutes: _intervalMinutes));
         prefs.setString('next_feeding_time', _nextFeedingTime!.toIso8601String());
       }
+      // 计算剩余时间
+      final now = DateTime.now();
+      _feedingRemaining = _nextFeedingTime!.difference(now);
+      _isSettingsLoaded = true;
     });
     _startFeedingTimer();
   }
@@ -795,7 +800,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildFeedingCard(BuildContext context) {
-    final canFeed = _feedingRemaining.isNegative || _feedingRemaining == Duration.zero;
+    // 设置未加载时显示橙色（未就绪状态）
+    final canFeed = _isSettingsLoaded && (_feedingRemaining.isNegative || _feedingRemaining == Duration.zero);
     
     return Container(
       decoration: BoxDecoration(

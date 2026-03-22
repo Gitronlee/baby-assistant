@@ -57,11 +57,19 @@ class _WeightScreenState extends State<WeightScreen> {
   List<MilkEntry> _milkHistory = [];
   late SharedPreferences _prefs;
   int _selectedTab = 0;
+  late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(initialPage: _selectedTab);
     _loadData();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -493,7 +501,14 @@ class _WeightScreenState extends State<WeightScreen> {
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => setState(() => _selectedTab = 0),
+                    onPressed: () {
+                      setState(() => _selectedTab = 0);
+                      _pageController.animateToPage(
+                        0,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _selectedTab == 0 ? Colors.blue.shade100 : Colors.grey.shade200,
                     ),
@@ -503,7 +518,14 @@ class _WeightScreenState extends State<WeightScreen> {
                 const SizedBox(width: 4),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => setState(() => _selectedTab = 1),
+                    onPressed: () {
+                      setState(() => _selectedTab = 1);
+                      _pageController.animateToPage(
+                        1,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _selectedTab == 1 ? Colors.green.shade100 : Colors.grey.shade200,
                     ),
@@ -513,7 +535,14 @@ class _WeightScreenState extends State<WeightScreen> {
                 const SizedBox(width: 4),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => setState(() => _selectedTab = 2),
+                    onPressed: () {
+                      setState(() => _selectedTab = 2);
+                      _pageController.animateToPage(
+                        2,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _selectedTab == 2 ? Colors.orange.shade100 : Colors.grey.shade200,
                     ),
@@ -524,11 +553,17 @@ class _WeightScreenState extends State<WeightScreen> {
             ),
           ),
           Expanded(
-            child: _selectedTab == 0
-                ? _buildWeightTab(cardColor)
-                : _selectedTab == 1
-                    ? _buildHeightTab(cardColor)
-                    : _buildMilkTab(cardColor),
+            child: PageView(
+              controller: _pageController,
+              onPageChanged: (index) {
+                setState(() => _selectedTab = index);
+              },
+              children: [
+                _buildWeightTab(cardColor),
+                _buildHeightTab(cardColor),
+                _buildMilkTab(cardColor),
+              ],
+            ),
           ),
         ],
       ),

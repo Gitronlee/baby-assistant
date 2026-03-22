@@ -761,34 +761,34 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           const SizedBox(height: 12),
-                      Text(
-                        '助眠白噪声',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: isActive ? Colors.white.withOpacity(0.9) : Colors.indigo.shade700,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        _customAudioPath != null ? '自定义音频' : _currentNoise,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: isActive ? Colors.white : Colors.indigo.shade600,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        isActive ? '点击暂停' : '点击播放 · 长按选择',
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: isActive 
-                              ? Colors.white.withOpacity(0.7)
-                              : Colors.indigo.shade400,
-                        ),
-                      ),
-                    ],
+                          Text(
+                            '助眠白噪声',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: isActive ? Colors.white.withOpacity(0.9) : Colors.indigo.shade700,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            _customAudioPath != null ? '自定义音频' : _currentNoise,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: isActive ? Colors.white : Colors.indigo.shade600,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            isActive ? '点击暂停' : '点击播放 · 长按选择',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: isActive 
+                                  ? Colors.white.withOpacity(0.7)
+                                  : Colors.indigo.shade400,
+                            ),
+                          ),
+                        ],
                   ),
                 ),
               ),
@@ -967,33 +967,33 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           const SizedBox(height: 12),
-                      Text(
-                        canFeed ? '可以喂奶了' : '距离下次喂奶',
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white.withOpacity(0.9),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        _formatFeedingDuration(_feedingRemaining),
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontFamily: 'monospace',
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '长按设置',
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.white.withOpacity(0.7),
-                        ),
-                      ),
-                    ],
+                          Text(
+                            canFeed ? '可以喂奶了' : '距离下次喂奶',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white.withOpacity(0.9),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            _formatFeedingDuration(_feedingRemaining),
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontFamily: 'monospace',
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '长按设置',
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: Colors.white.withOpacity(0.7),
+                            ),
+                          ),
+                        ],
                   ),
                 ),
               ),
@@ -1506,39 +1506,39 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           const SizedBox(height: 12),
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white.withOpacity(0.95),
-                        ),
-                      ),
-                      if (middleText != null) ...[
-                        const SizedBox(height: 4),
-                        Text(
-                          middleText,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                          Text(
+                            title,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white.withOpacity(0.95),
+                            ),
                           ),
-                        ),
-                      ],
-                      if (subtitle != null) ...[
-                        const SizedBox(height: 4),
-                        Text(
-                          subtitle,
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.white.withOpacity(0.7),
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ] else if (middleText == null) ...[
-                        const SizedBox(height: 20),
-                      ],
-                    ],
+                          if (middleText != null) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              middleText,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                          if (subtitle != null) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              subtitle,
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.white.withOpacity(0.7),
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ] else if (middleText == null) ...[
+                            const SizedBox(height: 20),
+                          ],
+                        ],
                   ),
                 ),
               ),

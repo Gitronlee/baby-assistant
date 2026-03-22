@@ -404,44 +404,92 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          // 装饰圆形 - 增加层次感
+          // 装饰圆形 - 增加层次感和深度
+          // 右上角粉色圆形 - 主装饰
           Positioned(
-            top: -80,
-            right: -60,
+            top: -100,
+            right: -80,
             child: Container(
-              width: 200,
-              height: 200,
+              width: 280,
+              height: 280,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    Colors.pink.shade200.withOpacity(0.4),
+                    Colors.pink.shade300.withOpacity(0.5),
+                    Colors.pink.shade200.withOpacity(0.3),
                     Colors.pink.shade100.withOpacity(0.1),
                   ],
+                  stops: const [0.0, 0.5, 1.0],
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.pink.shade200.withOpacity(0.3),
+                    blurRadius: 30,
+                    spreadRadius: 10,
+                  ),
+                ],
               ),
             ),
           ),
+          // 左下角绿色圆形 - 平衡装饰
           Positioned(
-            bottom: 100,
-            left: -80,
+            bottom: 80,
+            left: -100,
             child: Container(
-              width: 250,
-              height: 250,
+              width: 300,
+              height: 300,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    Colors.green.shade200.withOpacity(0.3),
-                    Colors.green.shade100.withOpacity(0.1),
+                    Colors.green.shade300.withOpacity(0.4),
+                    Colors.green.shade200.withOpacity(0.2),
+                    Colors.green.shade100.withOpacity(0.05),
                   ],
+                  stops: const [0.0, 0.6, 1.0],
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.green.shade200.withOpacity(0.25),
+                    blurRadius: 25,
+                    spreadRadius: 8,
+                  ),
+                ],
               ),
             ),
           ),
+          // 中间右侧橙色圆形 - 活力装饰
           Positioned(
-            top: 200,
-            right: -40,
+            top: 180,
+            right: -60,
+            child: Container(
+              width: 180,
+              height: 180,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    Colors.orange.shade300.withOpacity(0.4),
+                    Colors.orange.shade200.withOpacity(0.2),
+                    Colors.orange.shade100.withOpacity(0.05),
+                  ],
+                  stops: const [0.0, 0.5, 1.0],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.orange.shade200.withOpacity(0.2),
+                    blurRadius: 20,
+                    spreadRadius: 5,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          // 左上角紫色圆形 - 柔和装饰
+          Positioned(
+            top: 100,
+            left: -40,
             child: Container(
               width: 150,
               height: 150,
@@ -449,9 +497,29 @@ class _HomeScreenState extends State<HomeScreen> {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    Colors.orange.shade200.withOpacity(0.3),
-                    Colors.orange.shade100.withOpacity(0.1),
+                    Colors.purple.shade200.withOpacity(0.35),
+                    Colors.purple.shade100.withOpacity(0.15),
                   ],
+                  stops: const [0.0, 1.0],
+                ),
+              ),
+            ),
+          ),
+          // 右下角靛蓝色圆形 - 深度装饰
+          Positioned(
+            bottom: 200,
+            right: 20,
+            child: Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    Colors.indigo.shade200.withOpacity(0.3),
+                    Colors.indigo.shade100.withOpacity(0.1),
+                  ],
+                  stops: const [0.0, 1.0],
                 ),
               ),
             ),
@@ -521,102 +589,178 @@ class _HomeScreenState extends State<HomeScreen> {
     
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(28),
-        // 多层阴影创造厚度感
+        borderRadius: BorderRadius.circular(24),
+        // 多层阴影创造厚度感和实体感
         boxShadow: [
+          // 底层深阴影 - 模拟卡片底部接触面
           BoxShadow(
             color: isActive 
-                ? Colors.indigo.shade400.withOpacity(0.4)
-                : Colors.indigo.shade200.withOpacity(0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+                ? Colors.indigo.shade900.withOpacity(0.5)
+                : Colors.grey.shade400.withOpacity(0.4),
+            blurRadius: 0,
+            offset: const Offset(0, 12),
             spreadRadius: 0,
           ),
+          // 中层柔和阴影 - 过渡效果
           BoxShadow(
             color: isActive 
-                ? Colors.indigo.shade300.withOpacity(0.2)
-                : Colors.indigo.shade100.withOpacity(0.2),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
+                ? Colors.indigo.shade700.withOpacity(0.4)
+                : Colors.grey.shade300.withOpacity(0.35),
+            blurRadius: 8,
+            offset: const Offset(0, 8),
+            spreadRadius: -2,
+          ),
+          // 上层模糊阴影 - 悬浮效果
+          BoxShadow(
+            color: isActive 
+                ? Colors.indigo.shade500.withOpacity(0.3)
+                : Colors.indigo.shade200.withOpacity(0.25),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
+            spreadRadius: 0,
+          ),
+          // 顶部高光 - 增强立体感
+          BoxShadow(
+            color: Colors.white.withOpacity(0.8),
+            blurRadius: 0,
+            offset: const Offset(0, -2),
             spreadRadius: 0,
           ),
         ],
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(28),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(28),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: isActive
-                    ? [
-                        Colors.indigo.shade400.withOpacity(0.7),
-                        Colors.indigo.shade600.withOpacity(0.5),
-                      ]
-                    : [
-                        Colors.white.withOpacity(0.7),
-                        Colors.indigo.shade50.withOpacity(0.5),
-                      ],
-              ),
-              border: Border.all(
-                color: isActive 
-                    ? Colors.white.withOpacity(0.3)
-                    : Colors.white.withOpacity(0.6),
-                width: 1.5,
-              ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          // 底部厚度层
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.transparent,
+              isActive 
+                  ? Colors.indigo.shade900.withOpacity(0.3)
+                  : Colors.grey.shade300.withOpacity(0.3),
+            ],
+            stops: const [0.85, 1.0],
+          ),
+        ),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 6),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: isActive
+                  ? [
+                      Colors.indigo.shade400,
+                      Colors.indigo.shade600,
+                    ]
+                  : [
+                      Colors.white,
+                      Colors.indigo.shade50,
+                    ],
             ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: _toggleSleep,
-                onLongPress: _showNoiseSelector,
-                borderRadius: BorderRadius.circular(28),
-                splashColor: Colors.indigo.withOpacity(0.1),
-                highlightColor: Colors.indigo.withOpacity(0.05),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // 图标容器 - 增加厚度感
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: isActive
-                                ? [
-                                    Colors.white.withOpacity(0.3),
-                                    Colors.white.withOpacity(0.1),
-                                  ]
-                                : [
-                                    Colors.indigo.shade100.withOpacity(0.6),
-                                    Colors.indigo.shade50.withOpacity(0.4),
-                                  ],
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: isActive 
-                                  ? Colors.white.withOpacity(0.2)
-                                  : Colors.indigo.shade200.withOpacity(0.3),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
+            border: Border.all(
+              color: isActive 
+                  ? Colors.indigo.shade300.withOpacity(0.6)
+                  : Colors.white,
+              width: 2,
+            ),
+            boxShadow: [
+              // 内阴影 - 增强实体感
+              BoxShadow(
+                color: isActive 
+                    ? Colors.indigo.shade900.withOpacity(0.3)
+                    : Colors.grey.shade200.withOpacity(0.5),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+                spreadRadius: -5,
+              ),
+              // 内部高光
+              BoxShadow(
+                color: Colors.white.withOpacity(0.5),
+                blurRadius: 0,
+                offset: const Offset(0, 1),
+                spreadRadius: -1,
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: isActive
+                        ? [
+                            Colors.indigo.shade400.withOpacity(0.85),
+                            Colors.indigo.shade600.withOpacity(0.75),
+                          ]
+                        : [
+                            Colors.white.withOpacity(0.9),
+                            Colors.indigo.shade50.withOpacity(0.8),
                           ],
-                        ),
-                        child: Icon(
-                          isActive ? Icons.nightlight_round : Icons.nightlight_outlined,
-                          size: 36,
-                          color: isActive ? Colors.white : Colors.indigo.shade500,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
+                  ),
+                  border: Border.all(
+                    color: isActive 
+                        ? Colors.white.withOpacity(0.3)
+                        : Colors.white.withOpacity(0.8),
+                    width: 1.5,
+                  ),
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: _toggleSleep,
+                    onLongPress: _showNoiseSelector,
+                    borderRadius: BorderRadius.circular(24),
+                    splashColor: Colors.indigo.withOpacity(0.1),
+                    highlightColor: Colors.indigo.withOpacity(0.05),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // 图标容器 - 增加厚度感
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: isActive
+                                    ? [
+                                        Colors.white.withOpacity(0.3),
+                                        Colors.white.withOpacity(0.1),
+                                      ]
+                                    : [
+                                        Colors.indigo.shade100.withOpacity(0.6),
+                                        Colors.indigo.shade50.withOpacity(0.4),
+                                      ],
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: isActive 
+                                      ? Colors.white.withOpacity(0.2)
+                                      : Colors.indigo.shade200.withOpacity(0.3),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              isActive ? Icons.nightlight_round : Icons.nightlight_outlined,
+                              size: 36,
+                              color: isActive ? Colors.white : Colors.indigo.shade500,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
                       Text(
                         '助眠白噪声',
                         style: TextStyle(
@@ -660,93 +804,169 @@ class _HomeScreenState extends State<HomeScreen> {
     
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(28),
-        // 多层阴影创造厚度感
+        borderRadius: BorderRadius.circular(24),
+        // 多层阴影创造厚度感和实体感
         boxShadow: [
+          // 底层深阴影 - 模拟卡片底部接触面
           BoxShadow(
             color: canFeed 
-                ? Colors.green.shade400.withOpacity(0.4)
-                : Colors.orange.shade400.withOpacity(0.4),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+                ? Colors.green.shade900.withOpacity(0.5)
+                : Colors.orange.shade900.withOpacity(0.5),
+            blurRadius: 0,
+            offset: const Offset(0, 12),
             spreadRadius: 0,
           ),
+          // 中层柔和阴影 - 过渡效果
           BoxShadow(
             color: canFeed 
-                ? Colors.green.shade300.withOpacity(0.2)
-                : Colors.orange.shade300.withOpacity(0.2),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
+                ? Colors.green.shade700.withOpacity(0.4)
+                : Colors.orange.shade700.withOpacity(0.4),
+            blurRadius: 8,
+            offset: const Offset(0, 8),
+            spreadRadius: -2,
+          ),
+          // 上层模糊阴影 - 悬浮效果
+          BoxShadow(
+            color: canFeed 
+                ? Colors.green.shade500.withOpacity(0.3)
+                : Colors.orange.shade500.withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
+            spreadRadius: 0,
+          ),
+          // 顶部高光 - 增强立体感
+          BoxShadow(
+            color: Colors.white.withOpacity(0.8),
+            blurRadius: 0,
+            offset: const Offset(0, -2),
             spreadRadius: 0,
           ),
         ],
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(28),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(28),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: canFeed
-                    ? [
-                        Colors.green.shade400.withOpacity(0.7),
-                        Colors.green.shade600.withOpacity(0.5),
-                      ]
-                    : [
-                        Colors.orange.shade300.withOpacity(0.7),
-                        Colors.orange.shade500.withOpacity(0.5),
-                      ],
-              ),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.4),
-                width: 1.5,
-              ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          // 底部厚度层
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.transparent,
+              canFeed 
+                  ? Colors.green.shade900.withOpacity(0.3)
+                  : Colors.orange.shade900.withOpacity(0.3),
+            ],
+            stops: const [0.85, 1.0],
+          ),
+        ),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 6),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: canFeed
+                  ? [
+                      Colors.green.shade400,
+                      Colors.green.shade600,
+                    ]
+                  : [
+                      Colors.orange.shade400,
+                      Colors.orange.shade600,
+                    ],
             ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () => _showFeedingResetDialog(context),
-                onLongPress: () => _showFeedingSettings(context),
-                borderRadius: BorderRadius.circular(28),
-                splashColor: (canFeed ? Colors.green : Colors.orange).withOpacity(0.1),
-                highlightColor: (canFeed ? Colors.green : Colors.orange).withOpacity(0.05),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // 图标容器 - 增加厚度感
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Colors.white.withOpacity(0.3),
-                              Colors.white.withOpacity(0.1),
-                            ],
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.white.withOpacity(0.2),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
+            border: Border.all(
+              color: canFeed 
+                  ? Colors.green.shade300.withOpacity(0.6)
+                  : Colors.orange.shade300.withOpacity(0.6),
+              width: 2,
+            ),
+            boxShadow: [
+              // 内阴影 - 增强实体感
+              BoxShadow(
+                color: canFeed 
+                    ? Colors.green.shade900.withOpacity(0.3)
+                    : Colors.orange.shade900.withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+                spreadRadius: -5,
+              ),
+              // 内部高光
+              BoxShadow(
+                color: Colors.white.withOpacity(0.5),
+                blurRadius: 0,
+                offset: const Offset(0, 1),
+                spreadRadius: -1,
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: canFeed
+                        ? [
+                            Colors.green.shade400.withOpacity(0.85),
+                            Colors.green.shade600.withOpacity(0.75),
+                          ]
+                        : [
+                            Colors.orange.shade400.withOpacity(0.85),
+                            Colors.orange.shade600.withOpacity(0.75),
                           ],
-                        ),
-                        child: Icon(
-                          canFeed ? Icons.baby_changing_station : Icons.local_drink,
-                          size: 36,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
+                  ),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.4),
+                    width: 1.5,
+                  ),
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => _showFeedingResetDialog(context),
+                    onLongPress: () => _showFeedingSettings(context),
+                    borderRadius: BorderRadius.circular(24),
+                    splashColor: (canFeed ? Colors.green : Colors.orange).withOpacity(0.1),
+                    highlightColor: (canFeed ? Colors.green : Colors.orange).withOpacity(0.05),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // 图标容器 - 增加厚度感
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Colors.white.withOpacity(0.3),
+                                  Colors.white.withOpacity(0.1),
+                                ],
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.white.withOpacity(0.2),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              canFeed ? Icons.baby_changing_station : Icons.local_drink,
+                              size: 36,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
                       Text(
                         canFeed ? '可以喂奶了' : '距离下次喂奶',
                         style: TextStyle(
@@ -1146,83 +1366,146 @@ class _HomeScreenState extends State<HomeScreen> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(28),
-        // 多层阴影创造厚度感
+        borderRadius: BorderRadius.circular(24),
+        // 多层阴影创造厚度感和实体感
         boxShadow: [
+          // 底层深阴影 - 模拟卡片底部接触面
           BoxShadow(
-            color: gradientColors.first.withOpacity(0.4),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+            color: gradientColors.last.withOpacity(0.5),
+            blurRadius: 0,
+            offset: const Offset(0, 12),
             spreadRadius: 0,
           ),
+          // 中层柔和阴影 - 过渡效果
           BoxShadow(
-            color: gradientColors.first.withOpacity(0.2),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
+            color: gradientColors.last.withOpacity(0.4),
+            blurRadius: 8,
+            offset: const Offset(0, 8),
+            spreadRadius: -2,
+          ),
+          // 上层模糊阴影 - 悬浮效果
+          BoxShadow(
+            color: gradientColors.first.withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
+            spreadRadius: 0,
+          ),
+          // 顶部高光 - 增强立体感
+          BoxShadow(
+            color: Colors.white.withOpacity(0.8),
+            blurRadius: 0,
+            offset: const Offset(0, -2),
             spreadRadius: 0,
           ),
         ],
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(28),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(28),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  gradientColors.first.withOpacity(0.6),
-                  gradientColors.last.withOpacity(0.4),
-                ],
-              ),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.5),
-                width: 1.5,
-              ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          // 底部厚度层
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.transparent,
+              gradientColors.last.withOpacity(0.3),
+            ],
+            stops: const [0.85, 1.0],
+          ),
+        ),
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 6),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                gradientColors.first,
+                gradientColors.last,
+              ],
             ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: onTap,
-                borderRadius: BorderRadius.circular(28),
-                splashColor: gradientColors.first.withOpacity(0.1),
-                highlightColor: gradientColors.first.withOpacity(0.05),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // 图标容器 - 增加厚度感
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Colors.white.withOpacity(0.4),
-                              Colors.white.withOpacity(0.2),
-                            ],
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: gradientColors.first.withOpacity(0.3),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
+            border: Border.all(
+              color: gradientColors.first.withOpacity(0.6),
+              width: 2,
+            ),
+            boxShadow: [
+              // 内阴影 - 增强实体感
+              BoxShadow(
+                color: gradientColors.last.withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+                spreadRadius: -5,
+              ),
+              // 内部高光
+              BoxShadow(
+                color: Colors.white.withOpacity(0.5),
+                blurRadius: 0,
+                offset: const Offset(0, 1),
+                spreadRadius: -1,
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      gradientColors.first.withOpacity(0.85),
+                      gradientColors.last.withOpacity(0.75),
+                    ],
+                  ),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.5),
+                    width: 1.5,
+                  ),
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: onTap,
+                    borderRadius: BorderRadius.circular(24),
+                    splashColor: gradientColors.first.withOpacity(0.1),
+                    highlightColor: gradientColors.first.withOpacity(0.05),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // 图标容器 - 增加厚度感
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Colors.white.withOpacity(0.4),
+                                  Colors.white.withOpacity(0.2),
+                                ],
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: gradientColors.first.withOpacity(0.3),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        child: Icon(
-                          icon,
-                          size: 36,
-                          color: iconColor,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
+                            child: Icon(
+                              icon,
+                              size: 36,
+                              color: iconColor,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
                       Text(
                         title,
                         style: TextStyle(
